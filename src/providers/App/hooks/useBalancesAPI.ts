@@ -11,8 +11,6 @@ type BalanceResponse = {
   error?: string;
 };
 
-const USE_LEGACY_BACKEND = import.meta.env.VITE_APP_USE_LEGACY_BACKEND === 'true';
-
 export default function useBalancesAPI() {
   const {
     chain,
@@ -20,7 +18,7 @@ export default function useBalancesAPI() {
   } = useNetworkConfigStore();
   const { t } = useTranslation('treasury');
 
-  const fetchBalancesNew = useCallback(
+  const fetchBalances = useCallback(
     async (address: Address, flavors: string[]): Promise<BalanceResponse> => {
       try {
         const params = new URLSearchParams();
@@ -38,46 +36,20 @@ export default function useBalancesAPI() {
     [chain.id, t],
   );
 
-  const fetchBalancesLegacy = useCallback(
-    async (
-      address: Address,
-      type: 'token' | 'nft' | 'defi',
-    ): Promise<{ data?: any; error?: string }> => {
-      try {
-        const endpoint =
-          type === 'token' ? 'tokenBalances' : type === 'nft' ? 'nftBalances' : 'defiBalances';
-        const balancesResponse = await fetch(
-          `/.netlify/functions/${endpoint}?address=${address}&network=${chain.id}`,
-        );
-        return await balancesResponse.json();
-      } catch (e) {
-        console.error(`Error while fetching treasury ${type} balances`, e);
-        return { error: t('errorFetchingBalances') };
-      }
-    },
-    [chain.id, t],
-  );
-
   const getTokenBalances = useCallback(
     async (address: Address): Promise<{ data?: TokenBalance[]; error?: string }> => {
-      if (USE_LEGACY_BACKEND) {
-        return fetchBalancesLegacy(address, 'token');
-      }
-      const response = await fetchBalancesNew(address, ['tokens']);
+      const response = await fetchBalances(address, ['tokens']);
       return { data: response.tokens?.data, error: response.error };
     },
-    [fetchBalancesNew, fetchBalancesLegacy],
+    [fetchBalances],
   );
 
   const getNFTBalances = useCallback(
     async (address: Address): Promise<{ data?: NFTBalance[]; error?: string }> => {
-      if (USE_LEGACY_BACKEND) {
-        return fetchBalancesLegacy(address, 'nft');
-      }
-      const response = await fetchBalancesNew(address, ['nfts']);
+      const response = await fetchBalances(address, ['nfts']);
       return { data: response.nfts?.data, error: response.error };
     },
-    [fetchBalancesNew, fetchBalancesLegacy],
+    [fetchBalances],
   );
 
   const getDeFiBalances = useCallback(
@@ -85,13 +57,10 @@ export default function useBalancesAPI() {
       if (!deFiSupported) {
         return { data: [] };
       }
-      if (USE_LEGACY_BACKEND) {
-        return fetchBalancesLegacy(address, 'defi');
-      }
-      const response = await fetchBalancesNew(address, ['defi']);
+      const response = await fetchBalances(address, ['defi']);
       return { data: response.defi?.data, error: response.error };
     },
-    [deFiSupported, fetchBalancesNew, fetchBalancesLegacy],
+    [deFiSupported, fetchBalances],
   );
 
   return { getTokenBalances, getNFTBalances, getDeFiBalances };

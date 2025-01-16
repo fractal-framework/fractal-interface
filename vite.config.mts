@@ -6,11 +6,7 @@ import packageJson from './package.json';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    checker({ typescript: true }),
-    process.env.VITE_APP_USE_LEGACY_BACKEND !== 'true' ? viteWranglerSpa() : null,
-  ],
+  plugins: [react(), checker({ typescript: true }), viteWranglerSpa()],
   server: {
     port: 3000,
   },

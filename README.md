@@ -26,15 +26,6 @@ Running development environment
 $ npm run dev
 ```
 
-### Netlify functions
-
-We're using `Netlify` functions for retrieving various off-chain data. You can run these using `npm run dev:netlify`.
-Currently it's being used to fetch abstract `address`'s ERC-20, ERC-721 and DeFi balances through `Moralis`.
-It is crucial to have `Netlify` functions running locally to work with anything related to DAO treasury, for instance
-
-- Treasury page
-- Payments feature
-
 ### Cloudflare Pages functions
 
 We're using Cloudflare Pages functions for retrieving various off-chain data.
@@ -66,11 +57,7 @@ The application uses two sets of environment variables:
 Start with adding a new Feature Flag to the app. In https://github.com/decentdao/decent-interface/src/helpers/featureFlags.ts, Add a flag.
 
 ```typescript
-export const FEATURE_FLAGS = [
-  'flag_dev',
-  'flag_demo',
-  'flag_yelling', // <-- new flag
-] as const;
+export const FEATURE_FLAGS = ['flag_dev', 'flag_feature_a'] as const;
 ```
 
 ### Usage
@@ -80,7 +67,7 @@ In consumer of the flag, use the convenience function
 ```typescript
 import { isFeatureEnabled } from '@/helpers/featureFlags';
 
-if (isFeatureEnabled('flag_yelling')) {
+if (isFeatureEnabled('flag_feature_a')) {
   // code here
 }
 ```
@@ -90,13 +77,13 @@ if (isFeatureEnabled('flag_yelling')) {
 During development, add a flag environment variable in your (local) .env(.local) file. It must be a string value of "ON" or "OFF". The syntax of the environment variable is `VITE_APP_<FLAG_NAME>`.
 
 ```shell
-VITE_APP_FLAG_YELLING="ON"
+VITE_APP_FLAG_FEATURE_A="ON"
 ```
 
 You can also set the flag in the URL with a query param. Notice how the `VITE_APP_` prefix is omitted and the flag name in the query param matches the name you gave it in code:
 
 ```shell
-http://localhost:3000/?flag_yelling=on
+http://localhost:3000/?flag_feature_a=on
 ```
 
 ### Testing
@@ -104,7 +91,7 @@ http://localhost:3000/?flag_yelling=on
 Override the flag value by adding query params to the URL. Notice how the `VITE_APP_` prefix is omitted and the flag name is in lowercase:
 
 ```
-https://app.dev.decentdao.org?flag_yelling=on
+https://app.decentdao.org?flag_feature_a=on
 ```
 
 From then, the flag holds the value from the URL param until app is refreshed

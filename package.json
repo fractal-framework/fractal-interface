@@ -15,8 +15,6 @@
     "@hatsprotocol/sdk-v1-core": "^0.9.0",
     "@hatsprotocol/sdk-v1-subgraph": "^1.0.0",
     "@hotjar/browser": "^1.0.9",
-    "@netlify/blobs": "^6.5.0",
-    "@netlify/functions": "^2.6.0",
     "@phosphor-icons/react": "^2.1.4",
     "@safe-global/api-kit": "^2.4.2",
     "@safe-global/safe-core-sdk-types": "^5.0.2",
@@ -41,7 +39,6 @@
     "lodash.camelcase": "^4.3.0",
     "lodash.debounce": "^4.0.8",
     "lodash.groupby": "^4.6.0",
-    "moralis": "^2.27.1",
     "react": "^18.2.0",
     "react-calendar": "^5.0.0",
     "react-dom": "^18.2.0",
@@ -66,9 +63,8 @@
     "pretty": "prettier . --write",
     "pretty:check": "prettier . --check",
     "dev": "vite --force",
-    "dev:netlify": "VITE_APP_USE_LEGACY_BACKEND=true netlify dev",
     "preview": "vite preview",
-    "build": "VITE_APP_USE_LEGACY_BACKEND=true NODE_OPTIONS=--max-old-space-size=8192 vite build",
+    "build": "vite build && vite build --mode page-function",
     "build:cf": "vite build && vite build --mode page-function",
     "graphql:build": "graphclient build",
     "graphql:dev-server": "graphclient serve-dev",
@@ -76,8 +72,8 @@
     "postinstall": "npm run graphql:build"
   },
   "engines": {
-    "node": "20.17.0",
-    "npm": "10.8.2"
+    "node": "23.6.0",
+    "npm": "10.9.2"
   },
   "browserslist": {
     "production": [
@@ -111,7 +107,6 @@
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "jsdom": "^24.0.0",
-    "netlify-cli": "^17.33.3",
     "prettier": "^3.3.3",
     "typescript": "^5.6.3",
     "vitest": "^1.2.2",

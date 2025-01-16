@@ -1,4 +1,4 @@
-export const FEATURE_FLAGS = ['flag_dev', 'flag_yelling', 'flag_leave'] as const;
+export const FEATURE_FLAGS = ['flag_dev', 'flag_yelling'] as const;
 
 export type FeatureFlagKeys = typeof FEATURE_FLAGS;
 export type FeatureFlagKey = (typeof FEATURE_FLAGS)[number];

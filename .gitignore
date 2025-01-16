@@ -36,9 +36,6 @@ yarn-error.log*
 # GraphQL generated files
 /.graphclient
 
-# Local Netlify folder
-/.netlify
-
 # Wrangler
 /.wrangler
 .dev.vars

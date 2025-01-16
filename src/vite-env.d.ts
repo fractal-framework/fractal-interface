@@ -2,10 +2,8 @@
 /// <reference types="vite/client" />
 
 // These are all typed as `string`s, because they exist in `.env`. If they didn't, they would be typed as `string | undefined`.
-// Netlify (or a local `.env.local` file) will override these environment variables.
 interface ImportMetaEnv {
   readonly PACKAGE_VERSION: string;
-  readonly VITE_APP_USE_LEGACY_BACKEND: string;
 
   readonly VITE_APP_NAME: string;
 
@@ -26,8 +24,6 @@ interface ImportMetaEnv {
   readonly VITE_APP_HOTJAR_VERSION: string;
 
   readonly VITE_APP_AMPLITUDE_API_KEY: string;
-
-  readonly VITE_APP_SHUTTER_EON_PUBKEY: string;
 
   readonly VITE_APP_SITE_URL: string;
 
