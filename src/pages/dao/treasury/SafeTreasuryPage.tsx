@@ -1,8 +1,7 @@
 import * as amplitude from '@amplitude/analytics-browser';
-import { Box, Divider, Flex, Grid, GridItem, Show, useDisclosure } from '@chakra-ui/react';
+import { Box, Divider, Flex, Grid, GridItem, Show } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import { Assets } from '../../../components/DAOTreasury/components/Assets';
 import {
   PaginationButton,
@@ -10,27 +9,17 @@ import {
   Transactions,
 } from '../../../components/DAOTreasury/components/Transactions';
 import { TitledInfoBox } from '../../../components/ui/containers/TitledInfoBox';
-import { ModalBase } from '../../../components/ui/modals/ModalBase';
-import { SendAssetsData, SendAssetsModal } from '../../../components/ui/modals/SendAssetsModal';
 import PageHeader from '../../../components/ui/page/Header/PageHeader';
-import { DAO_ROUTES } from '../../../constants/routes';
+import useSendAssetsActionModal from '../../../hooks/DAO/useSendAssetsActionModal';
 import { useCanUserCreateProposal } from '../../../hooks/utils/useCanUserSubmitProposal';
 import { analyticsEvents } from '../../../insights/analyticsEvents';
 import { useFractal } from '../../../providers/App/AppProvider';
-import { useNetworkConfigStore } from '../../../providers/NetworkConfig/useNetworkConfigStore';
-import { useProposalActionsStore } from '../../../store/actions/useProposalActionsStore';
 import { useDaoInfoStore } from '../../../store/daoInfo/useDaoInfoStore';
-import { ProposalActionType } from '../../../types';
-import {
-  isNativeAsset,
-  prepareSendAssetsActionData,
-} from '../../../utils/dao/prepareSendAssetsActionData';
 
 export function SafeTreasuryPage() {
   useEffect(() => {
     amplitude.track(analyticsEvents.TreasuryPageOpened);
   }, []);
-  const { safe } = useDaoInfoStore();
   const {
     treasury: { assetsFungible, transfers },
   } = useFractal();
@@ -38,10 +27,7 @@ export function SafeTreasuryPage() {
   const [shownTransactions, setShownTransactions] = useState(20);
   const { t } = useTranslation(['treasury', 'modals']);
   const { canUserCreateProposal } = useCanUserCreateProposal();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const { addAction } = useProposalActionsStore();
-  const navigate = useNavigate();
-  const { addressPrefix } = useNetworkConfigStore();
+
   const hasAnyBalanceOfAnyFungibleTokens =
     assetsFungible.reduce((p, c) => p + BigInt(c.balance), 0n) > 0n;
 
@@ -49,41 +35,7 @@ export function SafeTreasuryPage() {
 
   const totalTransfers = transfers?.length || 0;
   const showLoadMoreTransactions = totalTransfers > shownTransactions && shownTransactions < 100;
-
-  const sendAssetsAction = async (sendAssetsData: SendAssetsData) => {
-    if (!safe?.address) {
-      return;
-    }
-    const isNative = isNativeAsset(sendAssetsData.asset);
-    const transactionData = prepareSendAssetsActionData({
-      transferAmount: sendAssetsData.transferAmount,
-      asset: sendAssetsData.asset,
-      destinationAddress: sendAssetsData.destinationAddress,
-    });
-    addAction({
-      actionType: ProposalActionType.TRANSFER,
-      content: <></>,
-      transactions: [
-        {
-          targetAddress: transactionData.calldata,
-          ethValue: {
-            bigintValue: transactionData.value,
-            value: transactionData.value.toString(),
-          },
-          functionName: isNative ? '' : 'transfer',
-          parameters: isNative
-            ? []
-            : [
-                { signature: 'address', value: sendAssetsData.destinationAddress },
-                { signature: 'uint256', value: sendAssetsData.transferAmount.toString() },
-              ],
-        },
-      ],
-    });
-    navigate(DAO_ROUTES.proposalWithActionsNew.relative(addressPrefix, safe.address));
-
-    onClose();
-  };
+  const { openSendAssetsModal } = useSendAssetsActionModal();
 
   return (
     <Box>
@@ -104,7 +56,7 @@ export function SafeTreasuryPage() {
           showSendButton
             ? {
                 children: t('buttonSendAssets'),
-                onClick: onOpen,
+                onClick: openSendAssetsModal,
               }
             : undefined
         }
@@ -163,18 +115,6 @@ export function SafeTreasuryPage() {
           </TitledInfoBox>
         </GridItem>
       </Grid>
-      <ModalBase
-        isOpen={isOpen}
-        onClose={onClose}
-        title={t('sendAssetsTitle', { ns: 'modals' })}
-      >
-        <SendAssetsModal
-          submitButtonText={t('submitProposal', { ns: 'modals' })}
-          showNonceInput
-          close={onClose}
-          sendAssetsData={sendAssetsAction}
-        />
-      </ModalBase>
     </Box>
   );
 }

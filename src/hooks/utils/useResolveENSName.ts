@@ -45,7 +45,7 @@ export const useResolveENSName = () => {
 
     const mainnetPublicClient = createPublicClient({
       chain: mainnet.chain,
-      transport: http(mainnet.rpcEndpoint),
+      transport: http(mainnet.rpcEndpoint, { batch: true }),
     });
     const resolvedAddress = await mainnetPublicClient.getEnsAddress({ name: normalizedName });
     if (resolvedAddress) {

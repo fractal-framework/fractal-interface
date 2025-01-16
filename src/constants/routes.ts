@@ -82,6 +82,11 @@ export const DAO_ROUTES = {
       `/proposals/actions/new/metadata${getDaoQueryParam(addressPrefix, daoAddress)}`,
     path: 'proposals/actions/new/metadata',
   },
+  proposalSablierNew: {
+    relative: (addressPrefix: string, daoAddress: string) =>
+      `/proposals/new/sablier/metadata${getDaoQueryParam(addressPrefix, daoAddress)}`,
+    path: 'proposals/new/sablier/metadata',
+  },
   settings: {
     relative: (addressPrefix: string, safeAddress: string) =>
       `/settings${getDaoQueryParam(addressPrefix, safeAddress)}`,

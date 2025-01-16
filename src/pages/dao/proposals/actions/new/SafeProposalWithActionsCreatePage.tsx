@@ -1,6 +1,6 @@
 import * as amplitude from '@amplitude/analytics-browser';
 import { Center } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { ProposalBuilder } from '../../../../../components/ProposalBuilder';
 import { DEFAULT_PROPOSAL } from '../../../../../components/ProposalBuilder/constants';
 import { BarLoader } from '../../../../../components/ui/loaders/BarLoader';
@@ -23,6 +23,7 @@ export function SafeProposalWithActionsCreatePage() {
 
   const { prepareProposal } = usePrepareProposal();
   const { getTransactions } = useProposalActionsStore();
+  const transactions = useMemo(() => getTransactions(), [getTransactions]);
 
   const HEADER_HEIGHT = useHeaderHeight();
 
@@ -38,7 +39,7 @@ export function SafeProposalWithActionsCreatePage() {
     <ProposalBuilder
       initialValues={{
         ...DEFAULT_PROPOSAL,
-        transactions: getTransactions(),
+        transactions,
         nonce: safe.nextNonce,
       }}
       mode={ProposalBuilderMode.PROPOSAL_WITH_ACTIONS}

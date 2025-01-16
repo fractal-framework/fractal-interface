@@ -32,7 +32,7 @@ export const prepareSendAssetsActionData = ({
   }
 
   const actionData = {
-    target: target,
+    target,
     value: isNative ? transferAmount : 0n,
     calldata,
   };

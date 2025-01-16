@@ -97,6 +97,7 @@ export const optimismConfig: NetworkConfig = {
     sablierV2LockupDynamic: '0x4994325F8D4B4A36Bd643128BEb3EC3e582192C0',
     sablierV2LockupTranched: '0x90952912a50079bef00D5F49c975058d6573aCdC',
     sablierV2LockupLinear: '0x5C22471A86E9558ed9d22235dD5E0429207ccf4B',
+    disperse: '0xD152f549545093347A162Dce210e7293f1452150',
   },
   staking: {},
   moralis: {

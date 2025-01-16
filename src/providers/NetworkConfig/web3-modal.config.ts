@@ -24,7 +24,7 @@ export const transportsReducer = (
   accumulator: Record<string, HttpTransport>,
   network: NetworkConfig,
 ) => {
-  accumulator[network.chain.id] = http(network.rpcEndpoint);
+  accumulator[network.chain.id] = http(network.rpcEndpoint, { batch: true });
   return accumulator;
 };
 

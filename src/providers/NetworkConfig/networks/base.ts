@@ -97,6 +97,7 @@ export const baseConfig: NetworkConfig = {
     sablierV2LockupDynamic: '0xF9E9eD67DD2Fab3b3ca024A2d66Fcf0764d36742',
     sablierV2LockupTranched: '0xf4937657Ed8B3f3cB379Eed47b8818eE947BEb1e',
     sablierV2LockupLinear: '0x4CB16D4153123A74Bc724d161050959754f378D8',
+    disperse: '0xD152f549545093347A162Dce210e7293f1452150',
   },
   staking: {},
   moralis: {

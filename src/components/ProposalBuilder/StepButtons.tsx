@@ -57,7 +57,9 @@ export default function StepButtons(props: StepButtonsProps) {
                 type="submit"
                 isDisabled={
                   !canUserCreateProposal ||
+                  !!proposalMetadataError ||
                   !!transactionsError ||
+                  !proposalMetadata.title ||
                   !!nonceError ||
                   pendingTransaction
                 }

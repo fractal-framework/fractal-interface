@@ -119,5 +119,7 @@
   "and": "and",
   "days": "Days",
   "owner": "Owner",
+  "recipients": "recipients",
+  "airdrop": "Airdrop",
   "pageXofY": "Page {{current}} of {{total}}"
 }

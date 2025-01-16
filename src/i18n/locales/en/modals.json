@@ -49,5 +49,9 @@
   "confirmModifyGovernanceDescription": "Modifying your Safe's governance will have significant implications. Please be sure before proceeding.",
   "stakeTitle": "Stake",
   "removeSignerWarning": "The signer will be removed from the organization.",
-  "add": "Add"
+  "add": "Add",
+  "recipientsLabel": "Recipient",
+  "recipientsSublabel": "Enter the Ethereum wallet address of the recipient",
+  "airdropAmountSublabel": "Enter the amount of tokens to be airdropped to the recipient",
+  "addRecipient": "Add Recipient"
 }

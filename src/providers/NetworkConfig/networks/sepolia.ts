@@ -97,6 +97,7 @@ export const sepoliaConfig: NetworkConfig = {
     sablierV2LockupDynamic: '0x73BB6dD3f5828d60F8b3dBc8798EB10fbA2c5636',
     sablierV2LockupTranched: '0x3a1beA13A8C24c0EA2b8fAE91E4b2762A59D7aF5',
     sablierV2LockupLinear: '0x3E435560fd0a03ddF70694b35b673C25c65aBB6C',
+    disperse: '0xD152f549545093347A162Dce210e7293f1452150',
   },
   staking: {},
   moralis: {
