@@ -3,6 +3,7 @@ import { FormikProps } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { CreateProposalForm, ProposalBuilderMode } from '../../types/proposalBuilder';
 import { InputComponent, TextareaComponent } from '../ui/forms/InputComponent';
+import { builderInProposalMode } from './constants';
 
 export interface ProposalMetadataProps extends FormikProps<CreateProposalForm> {
   mode: ProposalBuilderMode;
@@ -14,8 +15,7 @@ export default function ProposalMetadata({
   mode,
 }: ProposalMetadataProps) {
   const { t } = useTranslation(['proposalTemplate', 'proposal', 'common']);
-  const isProposalMode =
-    mode === ProposalBuilderMode.PROPOSAL || mode === ProposalBuilderMode.PROPOSAL_WITH_ACTIONS;
+  const isProposalMode = builderInProposalMode(mode);
 
   return (
     <VStack

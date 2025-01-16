@@ -1,17 +1,17 @@
 import {
-  VStack,
-  HStack,
-  Text,
+  Accordion,
+  AccordionButton,
+  AccordionItem,
+  AccordionPanel,
   Box,
   Flex,
+  HStack,
   IconButton,
-  Accordion,
-  AccordionPanel,
-  AccordionItem,
-  AccordionButton,
   Radio,
+  Text,
+  VStack,
 } from '@chakra-ui/react';
-import { Plus, MinusCircle, CaretDown, CaretRight } from '@phosphor-icons/react';
+import { CaretDown, CaretRight, MinusCircle, Plus } from '@phosphor-icons/react';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CreateProposalTransaction, ProposalBuilderMode } from '../../types/proposalBuilder';
@@ -21,7 +21,7 @@ import ExampleLabel from '../ui/forms/ExampleLabel';
 import { BigIntComponent, InputComponent } from '../ui/forms/InputComponent';
 import CeleryButtonWithIcon from '../ui/utils/CeleryButtonWithIcon';
 import Divider from '../ui/utils/Divider';
-import { DEFAULT_PROPOSAL_TRANSACTION } from './constants';
+import { builderInProposalMode, DEFAULT_PROPOSAL_TRANSACTION } from './constants';
 
 interface ProposalTransactionProps {
   transaction: CreateProposalTransaction;
@@ -42,7 +42,7 @@ export default function ProposalTransaction({
   setFieldValue,
   mode,
 }: ProposalTransactionProps) {
-  const isProposalMode = mode === ProposalBuilderMode.PROPOSAL;
+  const isProposalMode = builderInProposalMode(mode);
   const { t } = useTranslation(['proposal', 'proposalTemplate', 'common']);
   const [expandedIndecies, setExpandedIndecies] = useState<number[]>([0]);
 
@@ -193,7 +193,7 @@ export default function ProposalTransaction({
                             setFieldValue(
                               `transactions.${transactionIndex}.parameters`,
                               transaction.parameters.filter(
-                                (parameterToRemove, parameterToRemoveIndex) =>
+                                (_parameterToRemove, parameterToRemoveIndex) =>
                                   parameterToRemoveIndex !== i,
                               ),
                             )

@@ -17,6 +17,7 @@ import { useDaoInfoStore } from '../../store/daoInfo/useDaoInfoStore';
 import { CreateProposalSteps, ProposalExecuteData } from '../../types';
 import {
   CreateProposalForm,
+  CreateSablierProposalForm,
   ProposalActionType,
   ProposalBuilderMode,
 } from '../../types/proposalBuilder';
@@ -27,12 +28,16 @@ import PageHeader from '../ui/page/Header/PageHeader';
 import { ProposalActionCard } from './ProposalActionCard';
 import ProposalDetails from './ProposalDetails';
 import ProposalMetadata from './ProposalMetadata';
+import { ProposalStreams } from './ProposalStreams';
 import ProposalTransactionsForm from './ProposalTransactionsForm';
 import StepButtons from './StepButtons';
+import { builderInProposalMode } from './constants';
 
 interface ProposalBuilderProps {
   mode: ProposalBuilderMode;
-  prepareProposalData: (values: CreateProposalForm) => Promise<ProposalExecuteData | undefined>;
+  prepareProposalData: (
+    values: CreateProposalForm | CreateSablierProposalForm,
+  ) => Promise<ProposalExecuteData | undefined>;
   initialValues: CreateProposalForm;
 }
 
@@ -49,8 +54,8 @@ export function ProposalBuilder({
   const step = (paths[paths.length - 1] || paths[paths.length - 2]) as
     | CreateProposalSteps
     | undefined;
-  const isProposalMode =
-    mode === ProposalBuilderMode.PROPOSAL || mode === ProposalBuilderMode.PROPOSAL_WITH_ACTIONS;
+  const isProposalMode = builderInProposalMode(mode);
+  const isSablierMode = mode === ProposalBuilderMode.SABLIER;
 
   const {
     governance: { isAzorius },
@@ -99,7 +104,7 @@ export function ProposalBuilder({
   }, [safeAddress, step, navigate, addressPrefix]);
 
   return (
-    <Formik<CreateProposalForm>
+    <Formik<CreateProposalForm | CreateSablierProposalForm>
       validationSchema={createProposalValidation}
       initialValues={initialValues}
       enableReinitialize
@@ -126,7 +131,7 @@ export function ProposalBuilder({
         }
       }}
     >
-      {(formikProps: FormikProps<CreateProposalForm>) => {
+      {(formikProps: FormikProps<CreateProposalForm | CreateSablierProposalForm>) => {
         const { handleSubmit } = formikProps;
 
         if (!safeAddress) {
@@ -213,15 +218,27 @@ export function ProposalBuilder({
                           }
                         />
                         <Route
-                          path={CreateProposalSteps.TRANSACTIONS}
+                          path={
+                            isSablierMode
+                              ? CreateProposalSteps.STREAMS
+                              : CreateProposalSteps.TRANSACTIONS
+                          }
                           element={
                             <>
-                              <ProposalTransactionsForm
-                                pendingTransaction={pendingCreateTx}
-                                safeNonce={safe?.nextNonce}
-                                mode={mode}
-                                {...formikProps}
-                              />
+                              {isSablierMode ? (
+                                <ProposalStreams
+                                  pendingTransaction={pendingCreateTx}
+                                  {...formikProps}
+                                  values={formikProps.values as CreateSablierProposalForm}
+                                />
+                              ) : (
+                                <ProposalTransactionsForm
+                                  pendingTransaction={pendingCreateTx}
+                                  safeNonce={safe?.nextNonce}
+                                  mode={mode}
+                                  {...formikProps}
+                                />
+                              )}
                               {!isAzorius && (
                                 <Flex
                                   alignItems="center"
