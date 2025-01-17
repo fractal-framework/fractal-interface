@@ -1,7 +1,6 @@
 import { abis } from '@fractal-framework/fractal-contracts';
 import { useEffect, useMemo } from 'react';
 import { getContract } from 'viem';
-import { usePublicClient } from 'wagmi';
 import { logError } from '../../../../helpers/errorLogging';
 import { useFractal } from '../../../../providers/App/AppProvider';
 import { FractalGovernanceAction } from '../../../../providers/App/governance/action';
@@ -12,6 +11,7 @@ import {
   mapProposalCreatedEventToProposal,
 } from '../../../../utils';
 import { getAverageBlockTime } from '../../../../utils/contract';
+import useNetworkPublicClient from '../../../useNetworkPublicClient';
 import { useAddressContractType } from '../../../utils/useAddressContractType';
 import { useSafeDecoder } from '../../../utils/useSafeDecoder';
 
@@ -27,11 +27,11 @@ export const useAzoriusListeners = () => {
     },
   } = useFractal();
   const decode = useSafeDecoder();
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
   const { getAddressContractType } = useAddressContractType();
 
   const azoriusContract = useMemo(() => {
-    if (!publicClient || !moduleAzoriusAddress) {
+    if (!moduleAzoriusAddress) {
       return;
     }
 
@@ -43,7 +43,7 @@ export const useAzoriusListeners = () => {
   }, [moduleAzoriusAddress, publicClient]);
 
   const erc20StrategyContract = useMemo(() => {
-    if (!linearVotingErc20Address || !publicClient) {
+    if (!linearVotingErc20Address) {
       return undefined;
     }
 
@@ -55,7 +55,7 @@ export const useAzoriusListeners = () => {
   }, [linearVotingErc20Address, publicClient]);
 
   const erc20WithHatsProposalCreationStrategyContract = useMemo(() => {
-    if (!linearVotingErc20WithHatsWhitelistingAddress || !publicClient) {
+    if (!linearVotingErc20WithHatsWhitelistingAddress) {
       return undefined;
     }
 
@@ -67,7 +67,7 @@ export const useAzoriusListeners = () => {
   }, [linearVotingErc20WithHatsWhitelistingAddress, publicClient]);
 
   const erc721StrategyContract = useMemo(() => {
-    if (!linearVotingErc721Address || !publicClient) {
+    if (!linearVotingErc721Address) {
       return undefined;
     }
 
@@ -79,7 +79,7 @@ export const useAzoriusListeners = () => {
   }, [linearVotingErc721Address, publicClient]);
 
   const erc721WithHatsProposalCreationStrategyContract = useMemo(() => {
-    if (!linearVotingErc721WithHatsWhitelistingAddress || !publicClient) {
+    if (!linearVotingErc721WithHatsWhitelistingAddress) {
       return undefined;
     }
 
@@ -103,8 +103,7 @@ export const useAzoriusListeners = () => {
             !log.args.proposalId ||
             !log.args.metadata ||
             !log.args.transactions ||
-            !log.args.proposer ||
-            !publicClient
+            !log.args.proposer
           ) {
             continue;
           }

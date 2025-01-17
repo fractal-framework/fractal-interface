@@ -5,9 +5,10 @@ import { TouchEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Address, getAddress, Hex } from 'viem';
-import { useAccount, usePublicClient } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { DETAILS_BOX_SHADOW } from '../../constants/common';
 import { DAO_ROUTES } from '../../constants/routes';
+import useNetworkPublicClient from '../../hooks/useNetworkPublicClient';
 import { useNetworkConfigStore } from '../../providers/NetworkConfig/useNetworkConfigStore';
 import { useDaoInfoStore } from '../../store/daoInfo/useDaoInfoStore';
 import { useRolesStore } from '../../store/roles/useRolesStore';
@@ -145,7 +146,7 @@ export function RolePaymentDetails({
   const { addressPrefix } = useNetworkConfigStore();
   const { refreshWithdrawableAmount } = useRolesStore();
   const navigate = useNavigate();
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
   const canWithdraw = useMemo(() => {
     if (
       connectedAccount &&
@@ -162,13 +163,7 @@ export function RolePaymentDetails({
   }, [payment.endDate, roleTerms]);
 
   const [modalType, props] = useMemo(() => {
-    if (
-      !payment.streamId ||
-      !payment.contractAddress ||
-      !roleHatWearerAddress ||
-      !publicClient ||
-      !roleHatId
-    ) {
+    if (!payment.streamId || !payment.contractAddress || !roleHatWearerAddress || !roleHatId) {
       return [ModalType.NONE] as const;
     }
     let recipient = roleHatWearerAddress;

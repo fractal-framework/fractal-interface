@@ -3,13 +3,13 @@ import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { encodeFunctionData } from 'viem';
 import { normalize } from 'viem/ens';
-import { usePublicClient } from 'wagmi';
 import { useFractal } from '../../../providers/App/AppProvider';
 import useIPFSClient from '../../../providers/App/hooks/useIPFSClient';
 import { useNetworkConfigStore } from '../../../providers/NetworkConfig/useNetworkConfigStore';
 import { ProposalExecuteData } from '../../../types';
 import { CreateProposalForm } from '../../../types/proposalBuilder';
 import { validateENSName } from '../../../utils/url';
+import useNetworkPublicClient from '../../useNetworkPublicClient';
 
 const customSerializer = (_: string, value: any) => {
   if (typeof value === 'bigint') {
@@ -20,7 +20,7 @@ const customSerializer = (_: string, value: any) => {
 };
 
 export default function useCreateProposalTemplate() {
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
   const client = useIPFSClient();
   const {
     governance: { proposalTemplates },
@@ -34,7 +34,7 @@ export default function useCreateProposalTemplate() {
 
   const prepareProposalTemplateProposal = useCallback(
     async (values: CreateProposalForm) => {
-      if (proposalTemplates && publicClient) {
+      if (proposalTemplates) {
         const proposalMetadata = {
           title: t('createProposalTemplateTitle'),
           description: t('createProposalTemplateDescription'),

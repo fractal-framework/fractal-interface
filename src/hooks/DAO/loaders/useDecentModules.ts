@@ -1,12 +1,10 @@
 import { useCallback } from 'react';
 import { getAddress } from 'viem';
-import { usePublicClient } from 'wagmi';
 import { DecentModule, FractalModuleType } from '../../../types';
 import { useAddressContractType } from '../../utils/useAddressContractType';
 
 export const useDecentModules = () => {
   const { getAddressContractType } = useAddressContractType();
-  const publicClient = usePublicClient();
   const lookupModules = useCallback(
     async (_moduleAddresses: string[]) => {
       const modules = await Promise.all(
@@ -17,12 +15,12 @@ export const useDecentModules = () => {
 
           let safeModule: DecentModule;
 
-          if (masterCopyData.isModuleAzorius && publicClient) {
+          if (masterCopyData.isModuleAzorius) {
             safeModule = {
               moduleAddress: moduleAddress,
               moduleType: FractalModuleType.AZORIUS,
             };
-          } else if (masterCopyData.isModuleFractal && publicClient) {
+          } else if (masterCopyData.isModuleFractal) {
             safeModule = {
               moduleAddress: moduleAddress,
               moduleType: FractalModuleType.FRACTAL,
@@ -39,7 +37,7 @@ export const useDecentModules = () => {
       );
       return modules;
     },
-    [getAddressContractType, publicClient],
+    [getAddressContractType],
   );
   return lookupModules;
 };

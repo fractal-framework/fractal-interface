@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { usePublicClient } from 'wagmi';
 import { logError } from '../../helpers/errorLogging';
+import useNetworkPublicClient from '../useNetworkPublicClient';
 
 const useBlockTimestamp = (blockNumber?: number) => {
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
   const [timestamp, setTimestamp] = useState<number>(Math.floor(Date.now() / 1000));
 
   useEffect(() => {
-    if (!publicClient || !blockNumber) {
+    if (!blockNumber) {
       setTimestamp(Math.floor(Date.now() / 1000));
       return;
     }

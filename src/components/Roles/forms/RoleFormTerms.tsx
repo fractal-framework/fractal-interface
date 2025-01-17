@@ -17,8 +17,8 @@ import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { getAddress, Hex } from 'viem';
-import { usePublicClient } from 'wagmi';
 import { DETAILS_BOX_SHADOW } from '../../../constants/common';
+import useNetworkPublicClient from '../../../hooks/useNetworkPublicClient';
 import { useRolesStore } from '../../../store/roles/useRolesStore';
 import { RoleFormTermStatus, RoleFormValues } from '../../../types/roles';
 import { DatePicker } from '../../ui/forms/DatePicker';
@@ -95,14 +95,11 @@ function RoleTermCreate({
 }) {
   const { t } = useTranslation('roles');
   const { values, errors, setFieldValue } = useFormikContext<RoleFormValues>();
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
 
   const handleAddTerm = async () => {
     if (!values.newRoleTerm?.nominee || !values.newRoleTerm?.termEndDate) {
       throw new Error('Nominee and Term End Date are required');
-    }
-    if (!publicClient) {
-      throw new Error('Public client is not available');
     }
     let nomineeAddress = values.newRoleTerm.nominee;
     if (!values.newRoleTerm.nominee.startsWith('0x') && !getAddress(values.newRoleTerm.nominee)) {

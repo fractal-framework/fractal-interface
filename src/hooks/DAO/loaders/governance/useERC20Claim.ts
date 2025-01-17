@@ -1,10 +1,10 @@
 import { abis } from '@fractal-framework/fractal-contracts';
 import { useCallback, useEffect, useRef } from 'react';
 import { getContract } from 'viem';
-import { usePublicClient } from 'wagmi';
 import { useFractal } from '../../../../providers/App/AppProvider';
 import { FractalGovernanceAction } from '../../../../providers/App/governance/action';
 import { useDaoInfoStore } from '../../../../store/daoInfo/useDaoInfoStore';
+import useNetworkPublicClient from '../../../useNetworkPublicClient';
 import { useAddressContractType } from '../../../utils/useAddressContractType';
 
 export function useERC20Claim() {
@@ -13,12 +13,12 @@ export function useERC20Claim() {
     action,
   } = useFractal();
   const { safe } = useDaoInfoStore();
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
   const safeAddress = safe?.address;
   const { getAddressContractType } = useAddressContractType();
 
   const loadTokenClaimContract = useCallback(async () => {
-    if (!votesTokenAddress || !publicClient) {
+    if (!votesTokenAddress) {
       return;
     }
 

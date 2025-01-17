@@ -1,12 +1,13 @@
 import { abis } from '@fractal-framework/fractal-contracts';
 import { useCallback, useEffect, useState } from 'react';
 import { Address, getContract } from 'viem';
-import { useAccount, usePublicClient } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { useFractal } from '../../providers/App/AppProvider';
 import { useSafeAPI } from '../../providers/App/hooks/useSafeAPI';
 import { useDaoInfoStore } from '../../store/daoInfo/useDaoInfoStore';
 import { GovernanceType } from '../../types';
 import { isDemoMode } from '../../utils/demoMode';
+import useNetworkPublicClient from '../useNetworkPublicClient';
 import useVotingStrategiesAddresses from './useVotingStrategiesAddresses';
 
 export function useCanUserCreateProposal() {
@@ -23,7 +24,7 @@ export function useCanUserCreateProposal() {
   const { safe } = useDaoInfoStore();
   const safeAPI = useSafeAPI();
   const [canUserCreateProposal, setCanUserCreateProposal] = useState<boolean>();
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
 
   const { getVotingStrategies } = useVotingStrategiesAddresses();
 
@@ -35,7 +36,7 @@ export function useCanUserCreateProposal() {
    */
   const getCanUserCreateProposal = useCallback(
     async (safeAddress?: Address): Promise<boolean | undefined> => {
-      if (!user.address || !safeAPI || !publicClient) {
+      if (!user.address || !safeAPI) {
         return;
       }
 

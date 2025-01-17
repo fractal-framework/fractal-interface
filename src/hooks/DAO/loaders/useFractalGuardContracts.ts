@@ -1,12 +1,12 @@
 import { abis } from '@fractal-framework/fractal-contracts';
 import { useCallback, useEffect, useRef } from 'react';
 import { getContract, zeroAddress } from 'viem';
-import { usePublicClient } from 'wagmi';
 import { useFractal } from '../../../providers/App/AppProvider';
 import { GuardContractAction } from '../../../providers/App/guardContracts/action';
 import { useNetworkConfigStore } from '../../../providers/NetworkConfig/useNetworkConfigStore';
 import { useDaoInfoStore } from '../../../store/daoInfo/useDaoInfoStore';
 import { FreezeGuardType, FreezeVotingType } from '../../../types';
+import useNetworkPublicClient from '../../useNetworkPublicClient';
 import { useAddressContractType } from '../../utils/useAddressContractType';
 import { DecentModule, FractalModuleType, GnosisSafe } from './../../../types/fractal';
 
@@ -23,14 +23,10 @@ export const useFractalGuardContracts = ({ loadOnMount = true }: { loadOnMount?:
 
   const { getAddressContractType } = useAddressContractType();
 
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
 
   const loadFractalGuardContracts = useCallback(
     async (_safe: GnosisSafe, _fractalModules: DecentModule[]) => {
-      if (!publicClient) {
-        return;
-      }
-
       const { guard } = _safe;
 
       const azoriusModule = _fractalModules?.find(

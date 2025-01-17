@@ -5,8 +5,9 @@ import { formatInTimeZone } from 'date-fns-tz';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { erc721Abi, getContract } from 'viem';
-import { useAccount, usePublicClient } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { TOOLTIP_MAXW } from '../../constants/common';
+import useNetworkPublicClient from '../../hooks/useNetworkPublicClient';
 import useBlockTimestamp from '../../hooks/utils/useBlockTimestamp';
 import { useFractal } from '../../providers/App/AppProvider';
 import { AzoriusGovernance, AzoriusProposal, GovernanceType } from '../../types';
@@ -58,10 +59,10 @@ export function AzoriusProposalSummary({ proposal }: { proposal: AzoriusProposal
 
   const toggleShowVotingPower = () => setShowVotingPower(prevState => !prevState);
 
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
 
   const getErc721VotingWeight = useCallback(async () => {
-    if (!address || !azoriusGovernance.erc721Tokens || !publicClient) {
+    if (!address || !azoriusGovernance.erc721Tokens) {
       return 0n;
     }
     const userVotingWeight = (
@@ -88,7 +89,7 @@ export function AzoriusProposalSummary({ proposal }: { proposal: AzoriusProposal
 
   useEffect(() => {
     async function loadProposalVotingWeight() {
-      if (address && publicClient) {
+      if (address) {
         if (isERC20) {
           const strategyContract = getContract({
             abi: abis.LinearERC20Voting,

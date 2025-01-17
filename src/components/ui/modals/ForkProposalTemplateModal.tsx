@@ -3,10 +3,10 @@ import { ChangeEventHandler, useState, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { getAddress } from 'viem';
-import { usePublicClient } from 'wagmi';
 import { DAO_ROUTES } from '../../../constants/routes';
 import { useIsSafe } from '../../../hooks/safe/useIsSafe';
 import { validateAddress } from '../../../hooks/schemas/common/useValidationAddress';
+import useNetworkPublicClient from '../../../hooks/useNetworkPublicClient';
 import { useCanUserCreateProposal } from '../../../hooks/utils/useCanUserSubmitProposal';
 import { useNetworkConfigStore } from '../../../providers/NetworkConfig/useNetworkConfigStore';
 import { useDaoInfoStore } from '../../../store/daoInfo/useDaoInfoStore';
@@ -31,7 +31,7 @@ export default function ForkProposalTemplateModal({
 
   const { t } = useTranslation('proposalTemplate');
   const navigate = useNavigate();
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
   const { chain, addressPrefix } = useNetworkConfigStore();
   const { subgraphInfo } = useDaoInfoStore();
 
@@ -44,7 +44,7 @@ export default function ForkProposalTemplateModal({
   };
 
   const validateDAOAddress = useCallback(async () => {
-    if (!inputValue || isSafeLoading || !publicClient) {
+    if (!inputValue || isSafeLoading) {
       setError('');
       return false;
     }

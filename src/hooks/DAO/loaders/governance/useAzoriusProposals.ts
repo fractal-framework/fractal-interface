@@ -8,7 +8,6 @@ import {
   PublicClient,
   getContract,
 } from 'viem';
-import { usePublicClient } from 'wagmi';
 import { logError } from '../../../../helpers/errorLogging';
 import { useFractal } from '../../../../providers/App/AppProvider';
 import { FractalGovernanceAction } from '../../../../providers/App/governance/action';
@@ -20,6 +19,7 @@ import {
 } from '../../../../types';
 import { AzoriusProposal } from '../../../../types/daoProposal';
 import { decodeTransactions, mapProposalCreatedEventToProposal } from '../../../../utils';
+import useNetworkPublicClient from '../../../useNetworkPublicClient';
 import { CacheExpiry, CacheKeys } from '../../../utils/cache/cacheDefaults';
 import { getValue, setValue } from '../../../utils/cache/useLocalStorage';
 import { useAddressContractType } from '../../../utils/useAddressContractType';
@@ -41,11 +41,11 @@ export const useAzoriusProposals = () => {
     action,
   } = useFractal();
   const decode = useSafeDecoder();
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
   const { getAddressContractType } = useAddressContractType();
 
   const azoriusContract = useMemo(() => {
-    if (!moduleAzoriusAddress || !publicClient) {
+    if (!moduleAzoriusAddress) {
       return;
     }
 
@@ -58,10 +58,7 @@ export const useAzoriusProposals = () => {
 
   const erc20VotedEvents = useMemo(async () => {
     let events: GetContractEventsReturnType<typeof abis.LinearERC20Voting, 'Voted'> | undefined;
-    if (
-      (!linearVotingErc20Address && !linearVotingErc20WithHatsWhitelistingAddress) ||
-      !publicClient
-    ) {
+    if (!linearVotingErc20Address && !linearVotingErc20WithHatsWhitelistingAddress) {
       return;
     }
 
@@ -90,10 +87,7 @@ export const useAzoriusProposals = () => {
 
   const erc721VotedEvents = useMemo(async () => {
     let events: GetContractEventsReturnType<typeof abis.LinearERC721Voting, 'Voted'> | undefined;
-    if (
-      (!linearVotingErc721Address && !linearVotingErc721WithHatsWhitelistingAddress) ||
-      !publicClient
-    ) {
+    if (!linearVotingErc721Address && !linearVotingErc721WithHatsWhitelistingAddress) {
       return;
     }
 

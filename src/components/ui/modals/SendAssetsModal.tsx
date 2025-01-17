@@ -4,9 +4,9 @@ import { Field, FieldAttributes, FieldProps, Form, Formik } from 'formik';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Address, getAddress } from 'viem';
-import { usePublicClient } from 'wagmi';
 import * as Yup from 'yup';
 import { useValidationAddress } from '../../../hooks/schemas/common/useValidationAddress';
+import useNetworkPublicClient from '../../../hooks/useNetworkPublicClient';
 import { useFractal } from '../../../providers/App/AppProvider';
 import { useDaoInfoStore } from '../../../store/daoInfo/useDaoInfoStore';
 import { BigIntValuePair, TokenBalance } from '../../../types';
@@ -47,7 +47,7 @@ export function SendAssetsModal({
   } = useFractal();
   const { safe } = useDaoInfoStore();
 
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
   const { t } = useTranslation(['modals', 'common']);
 
   const fungibleAssetsWithBalance = assetsFungible.filter(asset => parseFloat(asset.balance) > 0);
@@ -75,7 +75,7 @@ export function SendAssetsModal({
 
   const handleSendAssetsSubmit = async (values: SendAssetsFormValues) => {
     let destAddress = values.destinationAddress;
-    if (validateENSName(values.destinationAddress) && publicClient) {
+    if (validateENSName(values.destinationAddress)) {
       const ensAddress = await publicClient.getEnsAddress({ name: values.destinationAddress });
       if (ensAddress === null) {
         throw new Error('Invalid ENS name');

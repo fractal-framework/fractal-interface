@@ -7,7 +7,6 @@ import {
 import { useEffect, useCallback, useRef } from 'react';
 import { toast } from 'sonner';
 import { Address, erc20Abi, getAddress, zeroAddress } from 'viem';
-import { usePublicClient } from 'wagmi';
 import { useFractal } from '../../../providers/App/AppProvider';
 import useBalancesAPI from '../../../providers/App/hooks/useBalancesAPI';
 import { useSafeAPI } from '../../../providers/App/hooks/useSafeAPI';
@@ -22,6 +21,7 @@ import {
 } from '../../../types';
 import { formatCoin } from '../../../utils';
 import { MOCK_MORALIS_ETH_ADDRESS } from '../../../utils/address';
+import useNetworkPublicClient from '../../useNetworkPublicClient';
 import { CacheExpiry, CacheKeys } from '../../utils/cache/cacheDefaults';
 import { setValue } from '../../utils/cache/useLocalStorage';
 
@@ -46,7 +46,7 @@ export const useDecentTreasury = () => {
   const { chain, nativeTokenIcon } = useNetworkConfigStore();
   const safeAddress = safe?.address;
 
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
 
   const formatTransfer = useCallback(
     ({ transfer, isLast }: { transfer: TransferWithTokenInfo; isLast: boolean }) => {
@@ -195,9 +195,6 @@ export const useDecentTreasury = () => {
           if (!fallbackTokenData) {
             // Fallback to blockchain call if token info not available
 
-            if (!publicClient) {
-              throw new Error('No public client');
-            }
             const [name, symbol, decimals] = await Promise.all([
               publicClient.readContract({ address, abi: erc20Abi, functionName: 'name' }),
               publicClient.readContract({ address, abi: erc20Abi, functionName: 'symbol' }),

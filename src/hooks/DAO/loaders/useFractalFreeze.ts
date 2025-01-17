@@ -1,7 +1,7 @@
 import { abis } from '@fractal-framework/fractal-contracts';
 import { useCallback, useEffect, useRef } from 'react';
 import { Address, GetContractReturnType, PublicClient, getContract, zeroAddress } from 'viem';
-import { useAccount, usePublicClient } from 'wagmi';
+import { useAccount } from 'wagmi';
 import GnosisSafeL2Abi from '../../../assets/abi/GnosisSafeL2';
 import {
   isWithinFreezeProposalPeriod,
@@ -11,6 +11,7 @@ import { useFractal } from '../../../providers/App/AppProvider';
 import { FractalGuardAction } from '../../../providers/App/guard/action';
 import { FractalGuardContracts, FreezeVotingType } from '../../../types';
 import { blocksToSeconds, getTimeStamp } from '../../../utils/contract';
+import useNetworkPublicClient from '../../useNetworkPublicClient';
 import { useAddressContractType } from '../../utils/useAddressContractType';
 import useUserERC721VotingTokens from '../proposal/useUserERC721VotingTokens';
 import { FreezeGuard } from './../../../types/fractal';
@@ -34,7 +35,7 @@ export const useFractalFreeze = ({
     loadOnMount,
   );
 
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
   const { getAddressContractType } = useAddressContractType();
 
   const loadFractalFreezeGuard = useCallback(
@@ -42,7 +43,7 @@ export const useFractalFreeze = ({
       freezeVotingContractAddress,
       freezeVotingType: freezeVotingType,
     }: FractalGuardContracts) => {
-      if (freezeVotingType == null || !freezeVotingContractAddress || !account || !publicClient) {
+      if (freezeVotingType == null || !freezeVotingContractAddress || !account) {
         return;
       }
 
@@ -220,7 +221,6 @@ export const useFractalFreeze = ({
     if (
       !loadOnMount ||
       !freezeVotingContractAddress ||
-      !publicClient ||
       !isFreezeSet.current ||
       freezeVotingType !== FreezeVotingType.MULTISIG
     ) {
@@ -270,7 +270,6 @@ export const useFractalFreeze = ({
     if (
       !loadOnMount ||
       !freezeVotingContractAddress ||
-      !publicClient ||
       !isFreezeSet.current ||
       freezeVotingType !== FreezeVotingType.ERC721
     ) {
@@ -320,7 +319,6 @@ export const useFractalFreeze = ({
     if (
       !loadOnMount ||
       !freezeVotingContractAddress ||
-      !publicClient ||
       !isFreezeSet.current ||
       freezeVotingType !== FreezeVotingType.ERC20
     ) {

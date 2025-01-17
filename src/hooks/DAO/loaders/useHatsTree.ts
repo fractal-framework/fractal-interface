@@ -4,13 +4,13 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { PublicClient } from 'viem';
-import { usePublicClient } from 'wagmi';
 import { useFractal } from '../../../providers/App/AppProvider';
 import useIPFSClient from '../../../providers/App/hooks/useIPFSClient';
 import { useNetworkConfigStore } from '../../../providers/NetworkConfig/useNetworkConfigStore';
 import { useDaoInfoStore } from '../../../store/daoInfo/useDaoInfoStore';
 import { DecentHatsError } from '../../../store/roles/rolesStoreUtils';
 import { useRolesStore } from '../../../store/roles/useRolesStore';
+import useNetworkPublicClient from '../../useNetworkPublicClient';
 import { CacheExpiry, CacheKeys } from '../../utils/cache/cacheDefaults';
 import { getValue, setValue } from '../../utils/cache/useLocalStorage';
 
@@ -36,7 +36,7 @@ const useHatsTree = () => {
       hatsElectionsEligibilityMasterCopy: hatsElectionsImplementation,
     },
   } = useNetworkConfigStore();
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
   const apolloClient = useApolloClient();
 
   const getHatsTree = useCallback(
@@ -163,7 +163,6 @@ const useHatsTree = () => {
     if (
       !!hatsTreeId &&
       !!contextChainId &&
-      !!publicClient &&
       key !== null &&
       key !== daoHatTreeloadKey.current &&
       previousHatsTreeId !== `${hatsTreeId}` // don't try to load hats tree if this new DAO is stuck with the same hats tree id as the previous DAO

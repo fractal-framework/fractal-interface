@@ -1,11 +1,12 @@
 import { abis } from '@fractal-framework/fractal-contracts';
 import { useCallback, useEffect, useState } from 'react';
 import { Address, GetContractReturnType, PublicClient, erc721Abi, getContract } from 'viem';
-import { useAccount, usePublicClient } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { useFractal } from '../../../providers/App/AppProvider';
 import { useSafeAPI } from '../../../providers/App/hooks/useSafeAPI';
 import { useDaoInfoStore } from '../../../store/daoInfo/useDaoInfoStore';
 import { AzoriusGovernance } from '../../../types';
+import useNetworkPublicClient from '../../useNetworkPublicClient';
 import useVotingStrategiesAddresses from '../../utils/useVotingStrategiesAddresses';
 
 /**
@@ -35,7 +36,7 @@ export default function useUserERC721VotingTokens(
   const user = useAccount();
   const { safe } = useDaoInfoStore();
   const safeAPI = useSafeAPI();
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
 
   const { getVotingStrategies } = useVotingStrategiesAddresses();
 
@@ -57,7 +58,7 @@ export default function useUserERC721VotingTokens(
         | GetContractReturnType<typeof abis.LinearERC721Voting, PublicClient>
         | undefined;
 
-      if (!globalContextSafeAddress || !publicClient || !safeAPI) {
+      if (!globalContextSafeAddress || !safeAPI) {
         return {
           totalVotingTokenAddresses: totalTokenAddresses,
           totalVotingTokenIds: totalTokenIds,

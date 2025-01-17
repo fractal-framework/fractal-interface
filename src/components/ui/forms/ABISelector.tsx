@@ -4,8 +4,9 @@ import detectProxyTarget from 'evm-proxy-detection';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isAddress } from 'viem';
-import { useEnsAddress, usePublicClient } from 'wagmi';
+import { useEnsAddress } from 'wagmi';
 import { logError } from '../../../helpers/errorLogging';
+import useNetworkPublicClient from '../../../hooks/useNetworkPublicClient';
 import { useNetworkConfigStore } from '../../../providers/NetworkConfig/useNetworkConfigStore';
 import { LabelComponent } from './InputComponent';
 
@@ -29,11 +30,11 @@ export default function ABISelector({ target, onChange }: IABISelector) {
   const { etherscanAPIUrl } = useNetworkConfigStore();
   const { t } = useTranslation('common');
   const { data: ensAddress } = useEnsAddress({ name: target?.toLowerCase() });
-  const client = usePublicClient();
+  const client = useNetworkPublicClient();
 
   useEffect(() => {
     const loadABI = async () => {
-      if (client && target && ((ensAddress && isAddress(ensAddress)) || isAddress(target))) {
+      if (target && ((ensAddress && isAddress(ensAddress)) || isAddress(target))) {
         try {
           const requestFunc = ({ method, params }: { method: any; params: any }) =>
             client.request({ method, params });

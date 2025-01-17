@@ -1,7 +1,7 @@
 import { abis } from '@fractal-framework/fractal-contracts';
 import { useCallback } from 'react';
 import { Abi, Address } from 'viem';
-import { usePublicClient } from 'wagmi';
+import useNetworkPublicClient from '../useNetworkPublicClient';
 
 // https://github.com/adamgall/fractal-contract-identification/blob/229fc398661c5d684600feeb98a4eb767f728632/src/identify-contracts.ts
 
@@ -220,14 +220,10 @@ const contractTests: ContractFunctionTest[] = [
 ];
 
 export function useAddressContractType() {
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
 
   const getAddressContractType = useCallback(
     async (address: Address): Promise<ContractType> => {
-      if (!publicClient) {
-        throw new Error('Public client not found');
-      }
-
       const result = { ...defaultContractType };
 
       const allCalls = contractTests.flatMap(test => [

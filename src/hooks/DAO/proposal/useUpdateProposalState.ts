@@ -1,13 +1,13 @@
 import { abis } from '@fractal-framework/fractal-contracts';
 import { useCallback, Dispatch } from 'react';
 import { getContract } from 'viem';
-import { usePublicClient } from 'wagmi';
 import {
   FractalGovernanceAction,
   FractalGovernanceActions,
 } from '../../../providers/App/governance/action';
 import { FractalGovernanceContracts } from '../../../types';
 import { getAzoriusProposalState } from '../../../utils';
+import useNetworkPublicClient from '../../useNetworkPublicClient';
 
 interface IUseUpdateProposalState {
   governanceContracts: FractalGovernanceContracts;
@@ -18,10 +18,10 @@ export default function useUpdateProposalState({
   governanceContracts: { moduleAzoriusAddress },
   governanceDispatch,
 }: IUseUpdateProposalState) {
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
   const updateProposalState = useCallback(
     async (proposalId: number) => {
-      if (!moduleAzoriusAddress || !publicClient) {
+      if (!moduleAzoriusAddress) {
         return;
       }
       const azoriusContract = getContract({

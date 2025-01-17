@@ -1,13 +1,13 @@
 import { abis } from '@fractal-framework/fractal-contracts';
 import { useCallback, useEffect, useRef } from 'react';
 import { Address, getContract } from 'viem';
-import { usePublicClient } from 'wagmi';
 import LockReleaseAbi from '../../../assets/abi/LockRelease';
 import { useFractal } from '../../../providers/App/AppProvider';
 import { GovernanceContractAction } from '../../../providers/App/governanceContracts/action';
 import { useDaoInfoStore } from '../../../store/daoInfo/useDaoInfoStore';
 import { DecentModule } from '../../../types';
 import { getAzoriusModuleFromModules } from '../../../utils';
+import useNetworkPublicClient from '../../useNetworkPublicClient';
 import { useAddressContractType } from '../../utils/useAddressContractType';
 import useVotingStrategyAddress from '../../utils/useVotingStrategiesAddresses';
 
@@ -16,7 +16,7 @@ export const useGovernanceContracts = () => {
   const currentValidAddress = useRef<string | null>();
   const { action } = useFractal();
   const node = useDaoInfoStore();
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
   const { getAddressContractType } = useAddressContractType();
 
   const { getVotingStrategies } = useVotingStrategyAddress();
@@ -35,10 +35,6 @@ export const useGovernanceContracts = () => {
           payload: {},
         });
         return;
-      }
-
-      if (!publicClient) {
-        throw new Error('Public Client is not set!');
       }
 
       let linearVotingErc20Address: Address | undefined;

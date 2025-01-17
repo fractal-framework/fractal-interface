@@ -2,11 +2,11 @@ import { abis } from '@fractal-framework/fractal-contracts';
 import { hatIdToTreeId } from '@hatsprotocol/sdk-v1-core';
 import { useEffect } from 'react';
 import { Address, GetContractEventsReturnType, getContract } from 'viem';
-import { usePublicClient } from 'wagmi';
 import { logError } from '../../helpers/errorLogging';
 import { useNetworkConfigStore } from '../../providers/NetworkConfig/useNetworkConfigStore';
 import { useDaoInfoStore } from '../../store/daoInfo/useDaoInfoStore';
 import { useRolesStore } from '../../store/roles/useRolesStore';
+import useNetworkPublicClient from '../useNetworkPublicClient';
 
 const getHatsTreeId = (
   events: GetContractEventsReturnType<typeof abis.KeyValuePairs> | undefined,
@@ -91,7 +91,7 @@ const getHatIdsToStreamIds = (
 };
 
 const useKeyValuePairs = () => {
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
   const node = useDaoInfoStore();
   const {
     chain,
@@ -102,7 +102,7 @@ const useKeyValuePairs = () => {
   const safeAddress = node.safe?.address;
 
   useEffect(() => {
-    if (!safeAddress || !publicClient) {
+    if (!safeAddress) {
       return;
     }
 

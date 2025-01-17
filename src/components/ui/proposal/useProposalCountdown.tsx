@@ -1,11 +1,11 @@
 import { abis } from '@fractal-framework/fractal-contracts';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getContract } from 'viem';
-import { usePublicClient } from 'wagmi';
 import { logError } from '../../../helpers/errorLogging';
 import useSnapshotProposal from '../../../hooks/DAO/loaders/snapshot/useSnapshotProposal';
 import { useLoadDAOProposals } from '../../../hooks/DAO/loaders/useLoadDAOProposals';
 import useUpdateProposalState from '../../../hooks/DAO/proposal/useUpdateProposalState';
+import useNetworkPublicClient from '../../../hooks/useNetworkPublicClient';
 import { useFractal } from '../../../providers/App/AppProvider';
 import {
   AzoriusGovernance,
@@ -24,7 +24,7 @@ export function useProposalCountdown(proposal: FractalProposal) {
     governanceContracts,
     action,
   } = useFractal();
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
 
   const [secondsLeft, setSecondsLeft] = useState<number>();
   const { snapshotProposal } = useSnapshotProposal(proposal);
@@ -90,8 +90,6 @@ export function useProposalCountdown(proposal: FractalProposal) {
   }, []);
 
   const getCountdown = useCallback(async () => {
-    if (!publicClient) return;
-
     const freezeGuard =
       freezeGuardContractAddress !== undefined && freezeGuardType === FreezeGuardType.MULTISIG
         ? getContract({

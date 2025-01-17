@@ -1,10 +1,10 @@
 import { useEffect, useState, useCallback } from 'react';
-import { usePublicClient } from 'wagmi';
+import useNetworkPublicClient from '../useNetworkPublicClient';
 
 const useCurrentBlockNumber = () => {
   const [currentBlockNumber, setCurrentBlockNumber] = useState<number>();
   const [isLoaded, setIsLoaded] = useState(false);
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
 
   const updateBlockNumber = useCallback(
     (block: number) => {
@@ -17,11 +17,6 @@ const useCurrentBlockNumber = () => {
   );
 
   useEffect(() => {
-    if (!publicClient) {
-      setCurrentBlockNumber(undefined);
-      return;
-    }
-
     const unwatch = publicClient.watchBlockNumber({
       onBlockNumber: blockNumber => updateBlockNumber(Number(blockNumber)),
     });

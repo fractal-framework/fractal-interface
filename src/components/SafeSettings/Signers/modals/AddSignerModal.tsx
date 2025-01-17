@@ -4,9 +4,9 @@ import { Field, FieldAttributes, Formik } from 'formik';
 import { useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Address, getAddress } from 'viem';
-import { usePublicClient } from 'wagmi';
 import * as Yup from 'yup';
 import { useValidationAddress } from '../../../../hooks/schemas/common/useValidationAddress';
+import useNetworkPublicClient from '../../../../hooks/useNetworkPublicClient';
 import { useDaoInfoStore } from '../../../../store/daoInfo/useDaoInfoStore';
 import { validateENSName } from '../../../../utils/url';
 import SupportTooltip from '../../../ui/badges/SupportTooltip';
@@ -31,7 +31,7 @@ function AddSignerModal({
   }
 
   const { t } = useTranslation(['modals', 'common']);
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
   const { addressValidationTest, newSignerValidationTest } = useValidationAddress();
   const tooltipContainer = useRef<HTMLDivElement>(null);
 
@@ -41,7 +41,7 @@ function AddSignerModal({
     async (values: { address: string; threshold: number; nonce: number }) => {
       const { address, nonce, threshold } = values;
       let validAddress = address;
-      if (validateENSName(validAddress) && publicClient) {
+      if (validateENSName(validAddress)) {
         const maybeEnsAddress = await publicClient.getEnsAddress({ name: address });
         if (maybeEnsAddress) {
           validAddress = maybeEnsAddress;

@@ -1,11 +1,11 @@
 import { abis } from '@fractal-framework/fractal-contracts';
 import { useCallback, useMemo } from 'react';
 import { getContract } from 'viem';
-import { usePublicClient } from 'wagmi';
 import { useFractal } from '../../../../providers/App/AppProvider';
 import { FractalGovernanceAction } from '../../../../providers/App/governance/action';
 import { VotingStrategyType } from '../../../../types';
 import { blocksToSeconds } from '../../../../utils/contract';
+import useNetworkPublicClient from '../../../useNetworkPublicClient';
 import { useTimeHelpers } from '../../../utils/useTimeHelpers';
 
 export const useERC721LinearStrategy = () => {
@@ -18,12 +18,12 @@ export const useERC721LinearStrategy = () => {
     action,
   } = useFractal();
   const { getTimeDuration } = useTimeHelpers();
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
 
   const erc721LinearVotingContract = useMemo(() => {
     const votingStrategyAddress =
       linearVotingErc721Address || linearVotingErc721WithHatsWhitelistingAddress;
-    if (!votingStrategyAddress || !publicClient) {
+    if (!votingStrategyAddress) {
       return;
     }
 
@@ -35,7 +35,7 @@ export const useERC721LinearStrategy = () => {
   }, [linearVotingErc721Address, linearVotingErc721WithHatsWhitelistingAddress, publicClient]);
 
   const loadERC721Strategy = useCallback(async () => {
-    if (!moduleAzoriusAddress || !erc721LinearVotingContract || !publicClient) {
+    if (!moduleAzoriusAddress || !erc721LinearVotingContract) {
       return;
     }
 

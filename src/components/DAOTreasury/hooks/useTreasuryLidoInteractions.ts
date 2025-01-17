@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { getContract } from 'viem';
-import { usePublicClient } from 'wagmi';
 import LidoWithdrawalQueueAbi from '../../../assets/abi/LidoWithdrawalQueueAbi';
 import useLidoStaking from '../../../hooks/stake/lido/useLidoStaking';
+import useNetworkPublicClient from '../../../hooks/useNetworkPublicClient';
 import { useCanUserCreateProposal } from '../../../hooks/utils/useCanUserSubmitProposal';
 import { useFractal } from '../../../providers/App/AppProvider';
 import { useNetworkConfigStore } from '../../../providers/NetworkConfig/useNetworkConfigStore';
@@ -17,7 +17,7 @@ export default function useTreasuryLidoInteractions() {
   const { handleUnstake, handleClaimUnstakedETH } = useLidoStaking();
   const { canUserCreateProposal } = useCanUserCreateProposal();
   const { staking } = useNetworkConfigStore();
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
 
   // --- Lido Stake button setup ---
   const showStakeButton =
@@ -48,7 +48,7 @@ export default function useTreasuryLidoInteractions() {
 
   useEffect(() => {
     const getLidoClaimableStatus = async () => {
-      if (!staking.lido?.withdrawalQueueContractAddress || !lidoWithdrawalNFT || !publicClient) {
+      if (!staking.lido?.withdrawalQueueContractAddress || !lidoWithdrawalNFT) {
         return;
       }
 

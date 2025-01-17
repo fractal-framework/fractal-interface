@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Address, encodeFunctionData, getContract, isHex } from 'viem';
-import { usePublicClient } from 'wagmi';
 import GnosisSafeL2Abi from '../../assets/abi/GnosisSafeL2';
 import MultiSendCallOnlyAbi from '../../assets/abi/MultiSendCallOnly';
 import { SENTINEL_ADDRESS } from '../../constants/common';
@@ -21,6 +20,7 @@ import {
   SubDAO,
   VotingStrategyType,
 } from '../../types';
+import useNetworkPublicClient from '../useNetworkPublicClient';
 import { useAddressContractType } from '../utils/useAddressContractType';
 import { useCanUserCreateProposal } from '../utils/useCanUserSubmitProposal';
 import { DecentModule } from './../../types/fractal';
@@ -58,7 +58,7 @@ const useDeployAzorius = () => {
   const { submitProposal } = useSubmitProposal();
   const { canUserCreateProposal } = useCanUserCreateProposal();
 
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
   const safeApi = useSafeAPI();
   const lookupModules = useDecentModules();
 
@@ -89,7 +89,7 @@ const useDeployAzorius = () => {
       },
     ) => {
       const { shouldSetName, shouldSetSnapshot } = opts;
-      if (!safeAddress || !canUserCreateProposal || !safe || !publicClient) {
+      if (!safeAddress || !canUserCreateProposal || !safe) {
         return;
       }
 

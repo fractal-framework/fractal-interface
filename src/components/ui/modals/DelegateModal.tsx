@@ -3,10 +3,11 @@ import { abis } from '@fractal-framework/fractal-contracts';
 import { Field, FieldAttributes, Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { getAddress, getContract, zeroAddress } from 'viem';
-import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
+import { useAccount, useWalletClient } from 'wagmi';
 import * as Yup from 'yup';
 import LockReleaseAbi from '../../../assets/abi/LockRelease';
 import { useValidationAddress } from '../../../hooks/schemas/common/useValidationAddress';
+import useNetworkPublicClient from '../../../hooks/useNetworkPublicClient';
 import { useGetAccountName } from '../../../hooks/utils/useGetAccountName';
 import { useTransaction } from '../../../hooks/utils/useTransaction';
 import { useFractal } from '../../../providers/App/AppProvider';
@@ -36,12 +37,12 @@ export function DelegateModal({ close }: { close: Function }) {
   const [contractCall, pending] = useTransaction();
   const { addressValidationTest } = useValidationAddress();
   const { data: walletClient } = useWalletClient();
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
 
   const submitDelegation = async (values: { address: string }) => {
     if (!votesTokenAddress || !walletClient) return;
     let validAddress = values.address;
-    if (validateENSName(validAddress) && publicClient) {
+    if (validateENSName(validAddress)) {
       const maybeEnsAddress = await publicClient.getEnsAddress({ name: values.address });
       if (maybeEnsAddress) {
         validAddress = maybeEnsAddress;
@@ -65,7 +66,7 @@ export function DelegateModal({ close }: { close: Function }) {
     });
   };
   const submitLockedDelegation = async (values: { address: string }) => {
-    if (!lockReleaseAddress || !publicClient || !walletClient) return;
+    if (!lockReleaseAddress || !walletClient) return;
     let validAddress = values.address;
     if (validateENSName(validAddress)) {
       const maybeEnsAddress = await publicClient.getEnsAddress({ name: values.address });

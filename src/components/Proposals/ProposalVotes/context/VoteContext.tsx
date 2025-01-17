@@ -10,9 +10,10 @@ import {
   useState,
 } from 'react';
 import { Address, erc721Abi, getContract } from 'viem';
-import { useAccount, usePublicClient } from 'wagmi';
+import { useAccount } from 'wagmi';
 import useSnapshotProposal from '../../../../hooks/DAO/loaders/snapshot/useSnapshotProposal';
 import useUserERC721VotingTokens from '../../../../hooks/DAO/proposal/useUserERC721VotingTokens';
+import useNetworkPublicClient from '../../../../hooks/useNetworkPublicClient';
 import { useFractal } from '../../../../providers/App/AppProvider';
 import { useDaoInfoStore } from '../../../../store/daoInfo/useDaoInfoStore';
 import {
@@ -67,7 +68,7 @@ export function VoteContextProvider({
   const { loadVotingWeight } = useSnapshotProposal(proposal as SnapshotProposal);
   const { remainingTokenIds } = useUserERC721VotingTokens(null, proposal.proposalId, true);
   const { snapshotProposal } = useSnapshotProposal(proposal);
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
 
   const getHasVoted = useCallback(() => {
     setHasVotedLoading(true);
@@ -101,7 +102,7 @@ export function VoteContextProvider({
   const erc721VotingWeight = useCallback(async () => {
     const account = userAccount.address;
     const azoriusGovernance = governance as AzoriusGovernance;
-    if (!account || !azoriusGovernance.erc721Tokens || !publicClient) {
+    if (!account || !azoriusGovernance.erc721Tokens) {
       return 0n;
     }
     const userVotingWeight = (
@@ -123,7 +124,7 @@ export function VoteContextProvider({
   const getCanVote = useCallback(async () => {
     setCanVoteLoading(true);
     let newCanVote = false;
-    if (userAccount.address && publicClient) {
+    if (userAccount.address) {
       if (snapshotProposal) {
         const votingWeightData = await loadVotingWeight();
         newCanVote = votingWeightData.votingWeight >= 1;

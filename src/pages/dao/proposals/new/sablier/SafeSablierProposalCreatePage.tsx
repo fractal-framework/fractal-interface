@@ -52,7 +52,6 @@ import {
   isAddress,
   zeroAddress,
 } from 'viem';
-import { usePublicClient } from 'wagmi';
 import SablierV2BatchAbi from '../../../../../assets/abi/SablierV2Batch';
 import { BigIntInput } from '../../../../../components/ui/forms/BigIntInput';
 import ExampleLabel from '../../../../../components/ui/forms/ExampleLabel';
@@ -68,6 +67,7 @@ import CeleryButtonWithIcon from '../../../../../components/ui/utils/CeleryButto
 import { useHeaderHeight } from '../../../../../constants/common';
 import { BASE_ROUTES, DAO_ROUTES } from '../../../../../constants/routes';
 import useSubmitProposal from '../../../../../hooks/DAO/proposal/useSubmitProposal';
+import useNetworkPublicClient from '../../../../../hooks/useNetworkPublicClient';
 import { useCanUserCreateProposal } from '../../../../../hooks/utils/useCanUserSubmitProposal';
 import { analyticsEvents } from '../../../../../insights/analyticsEvents';
 import { useFractal } from '../../../../../providers/App/AppProvider';
@@ -301,7 +301,7 @@ function StreamBuilder({
   index: number;
   pendingTransaction: boolean;
 }) {
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
   const [tokenDecimals, setTokenDecimals] = useState(0);
   const [rawTokenBalance, setRawTokenBalnace] = useState(0n);
   const [tokenBalanceFormatted, setTokenBalanceFormatted] = useState('');
@@ -313,7 +313,7 @@ function StreamBuilder({
 
   useEffect(() => {
     const fetchFormattedTokenBalance = async () => {
-      if (publicClient && safeAddress && stream.tokenAddress && isAddress(stream.tokenAddress)) {
+      if (safeAddress && stream.tokenAddress && isAddress(stream.tokenAddress)) {
         const tokenContract = getContract({
           abi: erc20Abi,
           client: publicClient,

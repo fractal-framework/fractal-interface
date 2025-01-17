@@ -4,7 +4,8 @@ import { Bank } from '@phosphor-icons/react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getContract } from 'viem';
-import { usePublicClient } from 'wagmi';
+
+import useNetworkPublicClient from '../../../hooks/useNetworkPublicClient';
 import { useTimeHelpers } from '../../../hooks/utils/useTimeHelpers';
 import { useFractal } from '../../../providers/App/AppProvider';
 import { useDaoInfoStore } from '../../../store/daoInfo/useDaoInfoStore';
@@ -19,7 +20,7 @@ export function InfoGovernance({ showTitle = true }: { showTitle?: boolean }) {
     guardContracts: { freezeGuardType, freezeGuardContractAddress },
   } = useFractal();
   const { safe } = useDaoInfoStore();
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
   const { getTimeDuration } = useTimeHelpers();
   const [timelockPeriod, setTimelockPeriod] = useState<string>();
   const [executionPeriod, setExecutionPeriod] = useState<string>();
@@ -28,11 +29,9 @@ export function InfoGovernance({ showTitle = true }: { showTitle?: boolean }) {
 
   useEffect(() => {
     const setTimelockInfo = async () => {
-      const formatBlocks = async (blocks: number): Promise<string | undefined> => {
-        if (publicClient) {
-          return getTimeDuration(await blocksToSeconds(blocks, publicClient));
-        }
-      };
+      const formatBlocks = async (blocks: number): Promise<string | undefined> =>
+        getTimeDuration(await blocksToSeconds(blocks, publicClient));
+
       if (freezeGuardType == FreezeGuardType.MULTISIG) {
         if (freezeGuardContractAddress && publicClient) {
           const freezeGuardContract = getContract({

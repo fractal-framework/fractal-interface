@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Address, isAddress, getAddress } from 'viem';
 import { normalize } from 'viem/ens';
-import { usePublicClient } from 'wagmi';
+import useNetworkPublicClient from '../useNetworkPublicClient';
 
 const useAddress = (addressInput: string) => {
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
   const [address, setAddress] = useState<Address>();
   const [isValid, setIsValid] = useState<boolean>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -29,13 +29,6 @@ const useAddress = (addressInput: string) => {
       return;
     }
 
-    if (!publicClient) {
-      setAddress(undefined);
-      setIsValid(undefined);
-      setIsLoading(false);
-      return;
-    }
-
     let normalizedAddress: string;
     try {
       normalizedAddress = normalize(addressInput);
@@ -45,7 +38,7 @@ const useAddress = (addressInput: string) => {
       setIsLoading(false);
       return;
     }
-
+    // @todo this should be mainnet?
     publicClient
       .getEnsAddress({ name: normalizedAddress })
       .then(resolvedAddress => {

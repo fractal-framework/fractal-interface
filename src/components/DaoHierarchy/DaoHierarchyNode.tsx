@@ -6,11 +6,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router-dom';
 import { Address, getContract, zeroAddress } from 'viem';
-import { usePublicClient } from 'wagmi';
 import { DAOQueryDocument } from '../../../.graphclient';
 import { SENTINEL_ADDRESS } from '../../constants/common';
 import { DAO_ROUTES } from '../../constants/routes';
 import { useDecentModules } from '../../hooks/DAO/loaders/useDecentModules';
+import useNetworkPublicClient from '../../hooks/useNetworkPublicClient';
 import { CacheKeys } from '../../hooks/utils/cache/cacheDefaults';
 import { setValue, getValue } from '../../hooks/utils/cache/useLocalStorage';
 import { useAddressContractType } from '../../hooks/utils/useAddressContractType';
@@ -44,7 +44,7 @@ export function DaoHierarchyNode({
   const [hierarchyNode, setHierarchyNode] = useState<DaoHierarchyInfo>();
   const [hasErrorLoading, setErrorLoading] = useState<boolean>(false);
   const { addressPrefix, subgraph, chain } = useNetworkConfigStore();
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
 
   const { getAddressContractType } = useAddressContractType();
   const lookupModules = useDecentModules();
@@ -59,10 +59,6 @@ export function DaoHierarchyNode({
 
   const getVotingStrategies = useCallback(
     async (azoriusModule: DecentModule) => {
-      if (!publicClient) {
-        throw new Error('Public Client is not set!');
-      }
-
       const azoriusContract = getContract({
         abi: abis.Azorius,
         address: azoriusModule.moduleAddress,
@@ -98,10 +94,6 @@ export function DaoHierarchyNode({
         throw new Error('No voting strategies found');
       }
 
-      if (!publicClient) {
-        throw new Error('Public Client is not set!');
-      }
-
       let governanceTypes: DaoHierarchyStrategyType[] = [];
 
       await Promise.all(
@@ -125,7 +117,7 @@ export function DaoHierarchyNode({
       );
       return governanceTypes.filter((value, index, self) => self.indexOf(value) === index);
     },
-    [getVotingStrategies, publicClient],
+    [getVotingStrategies],
   );
 
   const loadDao = useCallback(

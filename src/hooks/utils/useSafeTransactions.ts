@@ -2,13 +2,13 @@ import { abis } from '@fractal-framework/fractal-contracts';
 import { SafeMultisigTransactionListResponse } from '@safe-global/api-kit';
 import { useCallback } from 'react';
 import { Address, getAddress, getContract } from 'viem';
-import { usePublicClient } from 'wagmi';
 import { isApproved, isRejected } from '../../helpers/activity';
 import { useFractal } from '../../providers/App/AppProvider';
 import { FractalProposal, FractalProposalState } from '../../types';
 import { parseDecodedData } from '../../utils';
 import { getAverageBlockTime } from '../../utils/contract';
 import { getTxTimelockedTimestamp } from '../../utils/guard';
+import useNetworkPublicClient from '../useNetworkPublicClient';
 import { useSafeDecoder } from './useSafeDecoder';
 
 type FreezeGuardData = {
@@ -20,7 +20,7 @@ type FreezeGuardData = {
 export const useSafeTransactions = () => {
   const { guardContracts } = useFractal();
   const decode = useSafeDecoder();
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
 
   const getState = useCallback(
     async (
@@ -28,7 +28,7 @@ export const useSafeTransactions = () => {
       freezeGuardAddress?: Address,
       freezeGuardData?: FreezeGuardData,
     ) => {
-      if (freezeGuardAddress && freezeGuardData && publicClient) {
+      if (freezeGuardAddress && freezeGuardData) {
         return Promise.all(
           activities.map(async (activity, _, activityArr) => {
             if (!activity.transaction) {
@@ -108,7 +108,7 @@ export const useSafeTransactions = () => {
 
   const parseTransactions = useCallback(
     async (transactions: SafeMultisigTransactionListResponse) => {
-      if (!transactions.results.length || !publicClient) {
+      if (!transactions.results.length) {
         return [];
       }
 
@@ -170,7 +170,7 @@ export const useSafeTransactions = () => {
       );
       let freezeGuardData: FreezeGuardData | undefined;
 
-      if (guardContracts.freezeGuardContractAddress && publicClient) {
+      if (guardContracts.freezeGuardContractAddress) {
         const blockNumber = await publicClient.getBlockNumber();
         const averageBlockTime = BigInt(Math.round(await getAverageBlockTime(publicClient)));
         const freezeGuard = getContract({

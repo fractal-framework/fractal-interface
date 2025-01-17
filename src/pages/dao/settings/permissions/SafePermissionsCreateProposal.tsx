@@ -14,7 +14,6 @@ import {
   parseAbiParameters,
   zeroAddress,
 } from 'viem';
-import { usePublicClient } from 'wagmi';
 import { SafePermissionsStrategyAction } from '../../../../components/SafeSettings/SafePermissionsStrategyAction';
 import { SettingsPermissionsStrategyForm } from '../../../../components/SafeSettings/SettingsPermissionsStrategyForm';
 import { Card } from '../../../../components/ui/cards/Card';
@@ -25,6 +24,7 @@ import NestedPageHeader from '../../../../components/ui/page/Header/NestedPageHe
 import Divider from '../../../../components/ui/utils/Divider';
 import { DAO_ROUTES } from '../../../../constants/routes';
 import { getRandomBytes } from '../../../../helpers';
+import useNetworkPublicClient from '../../../../hooks/useNetworkPublicClient';
 import { generateContractByteCodeLinear } from '../../../../models/helpers/utils';
 import { useFractal } from '../../../../providers/App/AppProvider';
 import { useNetworkConfigStore } from '../../../../providers/NetworkConfig/useNetworkConfigStore';
@@ -38,7 +38,7 @@ import {
 } from '../../../../types';
 
 export function SafePermissionsCreateProposal() {
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
   const { t } = useTranslation(['settings', 'common', 'modals']);
   const {
     addressPrefix,
@@ -98,7 +98,7 @@ export function SafePermissionsCreateProposal() {
   };
 
   const handleCreateProposal = async () => {
-    if (proposerThreshold.bigintValue !== undefined && publicClient && moduleAzoriusAddress) {
+    if (proposerThreshold.bigintValue !== undefined && moduleAzoriusAddress) {
       let transactions: CreateProposalTransaction[];
       let actionType: ProposalActionType = ProposalActionType.EDIT;
 

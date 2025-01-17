@@ -2,17 +2,17 @@ import axios from 'axios';
 import detectProxyTarget from 'evm-proxy-detection';
 import { useCallback } from 'react';
 import { Address, decodeFunctionData, encodePacked, Hex, keccak256 } from 'viem';
-import { usePublicClient } from 'wagmi';
 import { useNetworkConfigStore } from '../../providers/NetworkConfig/useNetworkConfigStore';
 import { DecodedTransaction, DecodedTxParam } from '../../types';
 import { buildSafeApiUrl, parseMultiSendTransactions } from '../../utils';
+import useNetworkPublicClient from '../useNetworkPublicClient';
 import { CacheKeys } from './cache/cacheDefaults';
 import { DBObjectKeys, useIndexedDB } from './cache/useLocalDB';
 /**
  * Handles decoding and caching transactions via the Safe API.
  */
 export const useSafeDecoder = () => {
-  const client = usePublicClient();
+  const client = useNetworkPublicClient();
   const { safeBaseURL, etherscanAPIUrl } = useNetworkConfigStore();
   const [setValue, getValue] = useIndexedDB(DBObjectKeys.DECODED_TRANSACTIONS);
   const decode = useCallback(
@@ -63,9 +63,6 @@ export const useSafeDecoder = () => {
           }
         } catch (e) {
           console.error('Error decoding transaction using Safe API. Trying to decode with ABI', e);
-          if (!client) {
-            throw new Error('Client not found');
-          }
           const requestFunc = ({ method, params }: { method: any; params: any }) =>
             client.request({ method, params });
           const implementationAddress = await detectProxyTarget(to, requestFunc);

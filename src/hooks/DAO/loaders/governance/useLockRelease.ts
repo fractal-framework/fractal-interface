@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { getContract } from 'viem';
-import { useAccount, usePublicClient } from 'wagmi';
+import { useAccount } from 'wagmi';
 import LockReleaseAbi from '../../../../assets/abi/LockRelease';
 import { useFractal } from '../../../../providers/App/AppProvider';
 import { DecentGovernanceAction } from '../../../../providers/App/governance/action';
+import useNetworkPublicClient from '../../../useNetworkPublicClient';
 
 /**
  * @link https://github.com/decentdao/dcnt/blob/master/contracts/LockRelease.sol
@@ -18,10 +19,10 @@ export const useLockRelease = ({ onMount = true }: { onMount?: boolean }) => {
     action,
   } = useFractal();
   const user = useAccount();
-  const publicClient = usePublicClient();
+  const publicClient = useNetworkPublicClient();
 
   const lockReleaseContract = useMemo(() => {
-    if (!lockReleaseAddress || !publicClient) {
+    if (!lockReleaseAddress) {
       return;
     }
 
@@ -33,7 +34,7 @@ export const useLockRelease = ({ onMount = true }: { onMount?: boolean }) => {
   }, [lockReleaseAddress, publicClient]);
 
   const loadLockedVotesToken = useCallback(async () => {
-    if (!lockReleaseContract || !user.address || !publicClient) {
+    if (!lockReleaseContract || !user.address) {
       action.dispatch({ type: DecentGovernanceAction.RESET_LOCKED_TOKEN_ACCOUNT_DATA });
       return;
     }
@@ -56,7 +57,7 @@ export const useLockRelease = ({ onMount = true }: { onMount?: boolean }) => {
       type: DecentGovernanceAction.SET_LOCKED_TOKEN_ACCOUNT_DATA,
       payload: tokenAccountData,
     });
-  }, [action, lockReleaseContract, publicClient, user.address]);
+  }, [action, lockReleaseContract, user.address]);
 
   useEffect(() => {
     if (!user.address) {
@@ -75,7 +76,7 @@ export const useLockRelease = ({ onMount = true }: { onMount?: boolean }) => {
   }, [loadLockedVotesToken, lockReleaseAddress, onMount, user.address]);
 
   useEffect(() => {
-    if (!lockReleaseContract || !onMount || !publicClient || !user.address) {
+    if (!lockReleaseContract || !onMount || !user.address) {
       return;
     }
 
@@ -87,10 +88,10 @@ export const useLockRelease = ({ onMount = true }: { onMount?: boolean }) => {
     return () => {
       unwatch();
     };
-  }, [loadLockedVotesToken, lockReleaseContract, onMount, publicClient, user.address]);
+  }, [loadLockedVotesToken, lockReleaseContract, onMount, user.address]);
 
   useEffect(() => {
-    if (!lockReleaseContract || !onMount || !publicClient || !user.address) {
+    if (!lockReleaseContract || !onMount || !user.address) {
       return;
     }
 
@@ -113,7 +114,7 @@ export const useLockRelease = ({ onMount = true }: { onMount?: boolean }) => {
       unwatchToDelegate();
       unwatchFromDelegate();
     };
-  }, [loadLockedVotesToken, lockReleaseContract, onMount, publicClient, user.address]);
+  }, [loadLockedVotesToken, lockReleaseContract, onMount, user.address]);
 
   return { loadLockedVotesToken };
 };
