@@ -54,7 +54,7 @@ const useBuildDAOTx = () => {
     ) => {
       let isAzorius = false;
 
-      if (!user.address || !publicClient) {
+      if (!user.address) {
         return;
       }
 

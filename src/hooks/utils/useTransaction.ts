@@ -28,8 +28,6 @@ const useTransaction = () => {
 
   const contractCall = useCallback(
     (params: ContractCallParams) => {
-      if (!publicClient) return;
-
       let toastId = toast.loading(params.pendingMessage, {
         duration: Infinity,
       });

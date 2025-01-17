@@ -30,7 +30,7 @@ export default function AzoriusNFTDetail({
 
   useEffect(() => {
     const loadNFTDetails = async () => {
-      if (hasAddressError || !publicClient) {
+      if (hasAddressError) {
         return;
       }
 

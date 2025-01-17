@@ -274,7 +274,7 @@ const getPaymentStreams = async (
     slug: string;
   },
 ): Promise<SablierPayment[]> => {
-  if (!sablierSubgraph || !publicClient) {
+  if (!sablierSubgraph) {
     return [];
   }
   const streamQueryResult = await apolloClient.query({

@@ -84,7 +84,7 @@ export const useValidationAddress = () => {
       name: 'Address Validation',
       message: t('errorInvalidENSAddress', { ns: 'common', chain: chain.name }),
       test: async function (address: string | undefined) {
-        if (!address || !publicClient) return false;
+        if (!address) return false;
         setIsValidating(true);
 
         try {
@@ -119,7 +119,7 @@ export const useValidationAddress = () => {
       name: 'Address Validation',
       message: t('errorInvalidAddress', { ns: 'common' }),
       test: async function (address: string | undefined) {
-        if (!address || !publicClient) return false;
+        if (!address) return false;
         setIsValidating(true);
         const { validation } = await validateAddress({
           publicClient,
@@ -140,7 +140,7 @@ export const useValidationAddress = () => {
       name: 'New Signer Validation',
       message: t('alreadySigner', { ns: 'modals' }),
       test: async function (addressOrENS: string | undefined) {
-        if (!addressOrENS || !safe || !publicClient) return false;
+        if (!addressOrENS || !safe) return false;
 
         let resolvedAddress: Address | null;
 
@@ -163,7 +163,7 @@ export const useValidationAddress = () => {
     async (value: string, addressArray: string[]) => {
       // looks up tested value
       let inputValidation = addressValidationMap.current.get(value);
-      if (!!value && !inputValidation && publicClient) {
+      if (!!value && !inputValidation) {
         inputValidation = (await validateAddress({ publicClient, address: value })).validation;
       }
       // converts all inputs to addresses to compare
@@ -176,7 +176,7 @@ export const useValidationAddress = () => {
             return addressValidation.address;
           }
           // because mapping is not 'state', this catches values that may not be resolved yet
-          if (normalize(address) && publicClient) {
+          if (normalize(address)) {
             const { validation } = await validateAddress({ publicClient, address });
             return validation.address;
           }

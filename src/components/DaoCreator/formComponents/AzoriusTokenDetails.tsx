@@ -42,9 +42,6 @@ export function AzoriusTokenDetails(props: ICreationStepProps) {
 
   useStepRedirect({ values });
   const updateImportFields = useCallback(async () => {
-    if (!publicClient) {
-      return;
-    }
     const importAddress = values.erc20Token.tokenImportAddress;
     const importError = errors?.erc20Token?.tokenImportAddress;
     if (importAddress && !importError && isAddress(importAddress)) {

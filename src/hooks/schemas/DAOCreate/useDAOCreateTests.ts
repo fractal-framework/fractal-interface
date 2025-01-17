@@ -45,7 +45,7 @@ export function useDAOCreateTests() {
       name: 'Address Validation',
       message: t('errorInvalidENSAddress', { ns: 'common', chain: chain.name }),
       test: async function (address: string | undefined) {
-        if (!address || !publicClient) return false;
+        if (!address) return false;
         const { validation } = await validateAddress({ publicClient, address });
         if (validation.isValidAddress) {
           addressValidationMap.current.set(address, validation);
@@ -60,7 +60,7 @@ export function useDAOCreateTests() {
       name: 'Unique Addresses',
       message: t('errorDuplicateAddress'),
       test: async function (value: string | undefined, context: AnyObject) {
-        if (!value || !publicClient) return false;
+        if (!value) return false;
         // retreive parent array
         const parentAddressArray = context.from[1].value.tokenAllocations;
         if (parentAddressArray.length === 1) {

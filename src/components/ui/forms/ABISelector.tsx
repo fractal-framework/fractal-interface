@@ -27,9 +27,9 @@ interface IABISelector {
 
 export default function ABISelector({ target, onChange }: IABISelector) {
   const [abi, setABI] = useState<ABIElement[]>([]);
-  const { etherscanAPIUrl } = useNetworkConfigStore();
+  const { etherscanAPIUrl, chain } = useNetworkConfigStore();
   const { t } = useTranslation('common');
-  const { data: ensAddress } = useEnsAddress({ name: target?.toLowerCase() });
+  const { data: ensAddress } = useEnsAddress({ name: target?.toLowerCase(), chainId: chain.id });
   const client = useNetworkPublicClient();
 
   useEffect(() => {
