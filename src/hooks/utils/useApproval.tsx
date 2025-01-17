@@ -2,7 +2,8 @@ import { abis } from '@fractal-framework/fractal-contracts';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Address, getContract, maxUint256 } from 'viem';
-import { useAccount, useWalletClient } from 'wagmi';
+import { useAccount } from 'wagmi';
+import { useNetworkWalletClient } from '../useNetworkWalletClient';
 import { useTransaction } from './useTransaction';
 
 const useApproval = (tokenAddress?: Address, spenderAddress?: Address, userBalance?: bigint) => {
@@ -11,7 +12,7 @@ const useApproval = (tokenAddress?: Address, spenderAddress?: Address, userBalan
   const [approved, setApproved] = useState(false);
   const [contractCall, pending] = useTransaction();
   const { t } = useTranslation('treasury');
-  const { data: walletClient } = useWalletClient();
+  const { data: walletClient } = useNetworkWalletClient();
 
   const tokenContract = useMemo(() => {
     if (!walletClient || !tokenAddress) {

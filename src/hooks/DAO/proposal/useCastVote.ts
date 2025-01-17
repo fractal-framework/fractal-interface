@@ -2,8 +2,8 @@ import { abis } from '@fractal-framework/fractal-contracts';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Address, getContract } from 'viem';
-import { useWalletClient } from 'wagmi';
 import { useFractal } from '../../../providers/App/AppProvider';
+import { useNetworkWalletClient } from '../../useNetworkWalletClient';
 import { useTransaction } from '../../utils/useTransaction';
 import useUserERC721VotingTokens from './useUserERC721VotingTokens';
 
@@ -24,7 +24,7 @@ const useCastVote = (proposalId: string, strategy: Address) => {
     proposalId,
   );
 
-  const { data: walletClient } = useWalletClient();
+  const { data: walletClient } = useNetworkWalletClient();
 
   const { t } = useTranslation('transaction');
 

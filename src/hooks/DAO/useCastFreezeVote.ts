@@ -2,10 +2,10 @@ import { abis } from '@fractal-framework/fractal-contracts';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getContract } from 'viem';
-import { useWalletClient } from 'wagmi';
 import { useFractal } from '../../providers/App/AppProvider';
 import { useDaoInfoStore } from '../../store/daoInfo/useDaoInfoStore';
 import { FreezeVotingType } from '../../types';
+import { useNetworkWalletClient } from '../useNetworkWalletClient';
 import { useTransaction } from '../utils/useTransaction';
 import useUserERC721VotingTokens from './proposal/useUserERC721VotingTokens';
 
@@ -18,7 +18,7 @@ export const useCastFreezeVote = () => {
   const { getUserERC721VotingTokens } = useUserERC721VotingTokens(null, null, false);
 
   const { t } = useTranslation('transaction');
-  const { data: walletClient } = useWalletClient();
+  const { data: walletClient } = useNetworkWalletClient();
 
   const castFreezeVote = useCallback(() => {
     if (!freezeVotingContractAddress) return;

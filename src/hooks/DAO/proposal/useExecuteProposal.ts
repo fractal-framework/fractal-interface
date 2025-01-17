@@ -2,9 +2,9 @@ import { abis } from '@fractal-framework/fractal-contracts';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Address, Hex, getContract } from 'viem';
-import { useWalletClient } from 'wagmi';
 import { useFractal } from '../../../providers/App/AppProvider';
 import { MetaTransaction, FractalProposal, AzoriusProposal } from '../../../types';
+import { useNetworkWalletClient } from '../../useNetworkWalletClient';
 import { useTransaction } from '../../utils/useTransaction';
 import useUpdateProposalState from './useUpdateProposalState';
 
@@ -17,7 +17,7 @@ export default function useExecuteProposal() {
     governanceContracts,
     governanceDispatch: action.dispatch,
   });
-  const { data: walletClient } = useWalletClient();
+  const { data: walletClient } = useNetworkWalletClient();
   const [contractCall, pending] = useTransaction();
 
   const executeProposal = useCallback(

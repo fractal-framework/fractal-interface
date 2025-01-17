@@ -3,10 +3,10 @@ import { Download } from '@phosphor-icons/react';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Address, encodeFunctionData, getContract } from 'viem';
-import { useWalletClient } from 'wagmi';
 import HatsAccount1ofNAbi from '../../../assets/abi/HatsAccount1ofN';
 import { SablierV2LockupLinearAbi } from '../../../assets/abi/SablierV2LockupLinear';
 import { convertStreamIdToBigInt } from '../../../hooks/streams/useCreateSablierStream';
+import { useNetworkWalletClient } from '../../../hooks/useNetworkWalletClient';
 import useAvatar from '../../../hooks/utils/useAvatar';
 import { useGetAccountName } from '../../../hooks/utils/useGetAccountName';
 import { useTransaction } from '../../../hooks/utils/useTransaction';
@@ -38,7 +38,7 @@ export function PaymentWithdrawModal({
   onSuccess: () => Promise<void>;
   onClose: () => void;
 }) {
-  const { data: walletClient } = useWalletClient();
+  const { data: walletClient } = useNetworkWalletClient();
   const [contractCall, pendingTransaction] = useTransaction();
   const { t } = useTranslation(['roles', 'menu', 'common', 'modals']);
   const { displayName: accountDisplayName } = useGetAccountName(withdrawInformation.recipient);

@@ -12,7 +12,7 @@ import {
   isHex,
   parseAbiParameters,
 } from 'viem';
-import { useAccount, useWalletClient } from 'wagmi';
+import { useAccount } from 'wagmi';
 import MultiSendCallOnlyAbi from '../../../assets/abi/MultiSendCallOnly';
 import { ADDRESS_MULTISIG_METADATA } from '../../../constants/common';
 import { buildSafeAPIPost, encodeMultiSend } from '../../../helpers';
@@ -26,6 +26,7 @@ import { useDaoInfoStore } from '../../../store/daoInfo/useDaoInfoStore';
 import { CreateProposalMetadata, MetaTransaction, ProposalExecuteData } from '../../../types';
 import { buildSafeApiUrl, getAzoriusModuleFromModules } from '../../../utils';
 import useNetworkPublicClient from '../../useNetworkPublicClient';
+import { useNetworkWalletClient } from '../../useNetworkWalletClient';
 import useVotingStrategiesAddresses from '../../utils/useVotingStrategiesAddresses';
 import { useDecentModules } from '../loaders/useDecentModules';
 import { useLoadDAOProposals } from '../loaders/useLoadDAOProposals';
@@ -62,7 +63,7 @@ export default function useSubmitProposal() {
   const { t } = useTranslation('proposal');
   const [pendingCreateTx, setPendingCreateTx] = useState(false);
   const loadDAOProposals = useLoadDAOProposals();
-  const { data: walletClient } = useWalletClient();
+  const { data: walletClient } = useNetworkWalletClient();
   const publicClient = useNetworkPublicClient();
 
   const { getVotingStrategies } = useVotingStrategiesAddresses();

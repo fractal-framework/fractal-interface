@@ -5,9 +5,9 @@ import { format } from 'date-fns';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Address, getContract, Hex } from 'viem';
-import { useWalletClient } from 'wagmi';
 import { DETAILS_BOX_SHADOW } from '../../constants/common';
 import { useDateTimeDisplay } from '../../helpers/dateTime';
+import { useNetworkWalletClient } from '../../hooks/useNetworkWalletClient';
 import useAvatar from '../../hooks/utils/useAvatar';
 import { useCopyText } from '../../hooks/utils/useCopyText';
 import { useGetAccountName } from '../../hooks/utils/useGetAccountName';
@@ -280,7 +280,7 @@ export default function RoleTerm({
 }) {
   const [contractCall, contractCallPending] = useTransaction();
   const { hatsTree, getHat, updateCurrentTermStatus } = useRolesStore();
-  const { data: walletClient } = useWalletClient();
+  const { data: walletClient } = useNetworkWalletClient();
   const { t } = useTranslation(['roles']);
   const {
     contracts: { hatsProtocol },

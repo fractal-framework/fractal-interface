@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { useWalletClient } from 'wagmi';
 import { logError } from '../../../helpers/errorLogging';
 import { useDaoInfoStore } from '../../../store/daoInfo/useDaoInfoStore';
 import { ExtendedSnapshotProposal } from '../../../types';
 import encryptWithShutter from '../../../utils/shutter';
 import { submitSnapshotVote } from '../../../utils/snapshotVote';
+import { useNetworkWalletClient } from '../../useNetworkWalletClient';
 
 const useCastSnapshotVote = (extendedSnapshotProposal: ExtendedSnapshotProposal | null) => {
   const [selectedChoice, setSelectedChoice] = useState<number>();
@@ -14,7 +14,7 @@ const useCastSnapshotVote = (extendedSnapshotProposal: ExtendedSnapshotProposal 
 
   const { subgraphInfo } = useDaoInfoStore();
 
-  const { data: walletClient } = useWalletClient();
+  const { data: walletClient } = useNetworkWalletClient();
 
   useEffect(() => {
     if (extendedSnapshotProposal) {
